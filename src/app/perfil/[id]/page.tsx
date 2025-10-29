@@ -24,7 +24,8 @@ const DemoProfileData = {
         { name: "Ana Pérez", relation: "Esposa", phone: "+1 (555) 123-4567" },
         { name: "Dr. Carlos Ruiz", relation: "Médico", phone: "+1 (555) 987-6543" },
     ],
-    avatar: placeholderImages.find(p => p.id === "user-profile")
+    photoUrl: placeholderImages.find(p => p.id === "user-profile")?.imageUrl,
+    profileType: 'person' as 'person' | 'pet'
 }
 
 const ProfileView = lazy(() => import('./ProfileView'));
@@ -52,21 +53,20 @@ function PinForm({ id, onVerified }: { id: string; onVerified: (profile: Profile
 
             const result = await response.json();
 
-            if (!response.ok || result.error) {
-                throw new Error(result.error || 'No se pudo verificar la pulsera.');
-            }
-            
-            if (result.profile) {
+            if (result.success && result.profile) {
                 onVerified(result.profile);
             } else {
-                 // Handle cases like 'not_active' which return 200 but no profile
-                throw new Error(result.message || 'Este perfil no está disponible.');
+                setAccessDenied(true);
+                setErrorMessage(result.message || 'Error al verificar el perfil.');
+                if(response.status !== 403 && response.status !== 404){
+                     toast({ variant: "destructive", title: "Error", description: result.message || 'No se pudo verificar la pulsera.' });
+                }
             }
 
         } catch (error: any) {
             setAccessDenied(true);
-            setErrorMessage(error.message);
-            // We show the error in the dedicated error UI, no need for a toast here
+            setErrorMessage(error.message || "Ocurrió un error inesperado.");
+            toast({ variant: "destructive", title: "Error de Red", description: "No se pudo conectar con el servidor." });
         } finally {
             setIsLoading(false);
         }
@@ -76,6 +76,7 @@ function PinForm({ id, onVerified }: { id: string; onVerified: (profile: Profile
         if (pinFromQuery) {
             checkProfile(pinFromQuery);
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [pinFromQuery, id]);
 
 
@@ -96,7 +97,7 @@ function PinForm({ id, onVerified }: { id: string; onVerified: (profile: Profile
         )
     }
 
-    if (accessDenied) {
+    if (accessDenied && pinFromQuery) {
          return (
             <div className="flex flex-col items-center justify-center min-h-[calc(100vh-10rem)] py-12 bg-muted/40 text-center px-4">
                  <AlertTriangle className="h-12 w-12 text-destructive mb-4" />
@@ -111,47 +112,48 @@ function PinForm({ id, onVerified }: { id: string; onVerified: (profile: Profile
 
     // This form is shown if there is no PIN in the URL, or if there was an error
     // and the user needs to retry.
-    if (!pinFromQuery || (pinFromQuery && accessDenied)) {
-        return (
-            <div className="flex items-center justify-center min-h-[calc(100vh-10rem)] py-12 bg-muted/40 px-4">
-                <Card className="mx-auto max-w-sm w-full">
-                    <CardHeader className="text-center">
-                        <CardTitle className="text-2xl font-headline flex items-center justify-center gap-2"><Lock className="h-6 w-6"/> Acceso al Perfil</CardTitle>
-                        <CardDescription>
-                            Para ver el perfil <span className="font-bold">{id.toUpperCase()}</span>, ingresa el PIN de 4 dígitos.
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <form onSubmit={handleSubmit} className="grid gap-4">
-                            <div className="grid gap-2">
-                                <Label htmlFor="pin">PIN de Seguridad</Label>
-                                <Input
-                                    id="pin"
-                                    name="pin"
-                                    type="password"
-                                    placeholder="****"
-                                    maxLength={4}
-                                    required
-                                    disabled={isLoading}
-                                    autoFocus
-                                />
-                            </div>
-                            <div className="flex flex-col gap-2 mt-2">
-                                <Button type="submit" className="w-full" disabled={isLoading}>
-                                    {isLoading ? <Loader2 className="animate-spin"/> : 'Acceder al Perfil'}
-                                </Button>
-                                <Button variant="outline" asChild>
-                                    <Link href="/">Volver al Inicio</Link>
-                                </Button>
-                            </div>
-                        </form>
-                    </CardContent>
-                </Card>
-            </div>
-        )
-    }
-
-    return null;
+    return (
+        <div className="flex items-center justify-center min-h-[calc(100vh-10rem)] py-12 bg-muted/40 px-4">
+            <Card className="mx-auto max-w-sm w-full">
+                <CardHeader className="text-center">
+                    <CardTitle className="text-2xl font-headline flex items-center justify-center gap-2"><Lock className="h-6 w-6"/> Acceso al Perfil</CardTitle>
+                    <CardDescription>
+                        Para ver el perfil <span className="font-bold">{id.toUpperCase()}</span>, ingresa el PIN de 4 dígitos.
+                    </CardDescription>
+                </CardHeader>
+                <CardContent>
+                     {accessDenied && !pinFromQuery && (
+                        <div className="bg-destructive/10 text-destructive text-sm rounded-md p-3 text-center mb-4">
+                           {errorMessage}
+                        </div>
+                    )}
+                    <form onSubmit={handleSubmit} className="grid gap-4">
+                        <div className="grid gap-2">
+                            <Label htmlFor="pin">PIN de Seguridad</Label>
+                            <Input
+                                id="pin"
+                                name="pin"
+                                type="password"
+                                placeholder="****"
+                                maxLength={4}
+                                required
+                                disabled={isLoading}
+                                autoFocus
+                            />
+                        </div>
+                        <div className="flex flex-col gap-2 mt-2">
+                            <Button type="submit" className="w-full" disabled={isLoading}>
+                                {isLoading ? <Loader2 className="animate-spin"/> : 'Acceder al Perfil'}
+                            </Button>
+                            <Button variant="outline" asChild>
+                                <Link href="/">Volver al Inicio</Link>
+                            </Button>
+                        </div>
+                    </form>
+                </CardContent>
+            </Card>
+        </div>
+    )
 }
 
 function PublicProfilePageContent() {
@@ -160,12 +162,7 @@ function PublicProfilePageContent() {
     const id = params?.id || '';
 
     if (id === 'demostracion') {
-        const demoData: Partial<Profile> = {
-            ...DemoProfileData,
-            name: DemoProfileData.name,
-            profileType: 'person',
-            photoUrl: DemoProfileData.avatar?.imageUrl
-        }
+        const demoData: Partial<Profile> = DemoProfileData;
         return <ProfileView profile={demoData} />
     }
   
@@ -188,3 +185,5 @@ export default function PublicProfilePage() {
         </Suspense>
     )
 }
+
+    

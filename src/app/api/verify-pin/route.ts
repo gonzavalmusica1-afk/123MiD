@@ -39,7 +39,15 @@ export async function POST(request: Request) {
       );
     }
 
-    // Primero, verificar la privacidad. Si es privado, denegar acceso.
+    // Si es público, verificar el PIN.
+    if (data.pin !== pin) {
+      return NextResponse.json(
+        { success: false, message: 'El PIN ingresado es incorrecto.' },
+        { status: 403 }
+      );
+    }
+    
+    // Si el PIN es correcto, ahora verificar la privacidad
     if (data.privacy !== 'public') {
       return NextResponse.json(
         {
@@ -51,13 +59,6 @@ export async function POST(request: Request) {
       );
     }
 
-    // Si es público, entonces verificar el PIN.
-    if (data.pin !== pin) {
-      return NextResponse.json(
-        { success: false, message: 'El PIN ingresado es incorrecto.' },
-        { status: 403 }
-      );
-    }
 
     // Ocultar información sensible antes de devolver la respuesta.
     const { pin: _pin, userId: _userId, ...publicProfile } = data;
@@ -75,3 +76,5 @@ export async function POST(request: Request) {
     );
   }
 }
+
+    

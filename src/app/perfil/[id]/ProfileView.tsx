@@ -1,20 +1,28 @@
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { placeholderImages } from "@/lib/placeholder-images"
 import { ShieldAlert, Heart, Phone } from "lucide-react"
 import { Profile } from "@/lib/profiles"
+import { cn } from "@/lib/utils"
 
-export default function ProfileView({ profile }: { profile: Partial<Profile> }) {
+export default function ProfileView({ profile, isMockup = false }: { profile: Partial<Profile>, isMockup?: boolean }) {
     const fallbackAvatar = placeholderImages.find(p => p.id === (profile.profileType === 'pet' ? "pet-profile" : "user-profile"));
     const avatarUrl = profile.photoUrl || fallbackAvatar?.imageUrl;
     const avatarHint = profile.photoUrl ? profile.name : fallbackAvatar?.imageHint;
 
 
     return (
-        <div className="py-12 md:py-16 bg-muted/40 min-h-[calc(100vh-10rem)]">
-            <div className="container max-w-3xl mx-auto px-4">
-                <Card className="shadow-lg">
-                    <CardHeader className="bg-primary/10 p-6 text-center rounded-t-lg border-b border-primary/20">
+        <div className={cn(
+            "py-12 md:py-16 min-h-[calc(100vh-10rem)]",
+            !isMockup && "bg-muted/40"
+        )}>
+            <div className={cn("container max-w-3xl mx-auto", isMockup ? "px-0" : "px-4")}>
+                <Card className={cn(isMockup ? "shadow-none border-none rounded-none" : "shadow-lg")}>
+                    <CardHeader className={cn(
+                        "p-6 text-center border-b",
+                        isMockup ? "bg-transparent border-primary/10" : "bg-primary/10 border-primary/20 rounded-t-lg"
+                        )}>
                          <div className="flex justify-center items-center mb-4">
                             <Avatar className="h-24 w-24 border-4 border-background shadow-md">
                                 <AvatarImage src={avatarUrl} alt={profile.name} data-ai-hint={avatarHint} />
@@ -67,3 +75,5 @@ export default function ProfileView({ profile }: { profile: Partial<Profile> }) 
         </div>
     )
 }
+
+    
