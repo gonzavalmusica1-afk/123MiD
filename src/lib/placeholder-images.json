@@ -1,0 +1,28 @@
+{
+  "placeholderImages": [
+    {
+      "id": "hero",
+      "description": "A person smiling and showing their medical alert bracelet",
+      "imageUrl": "https://images.unsplash.com/photo-1607529378676-a20456ee2f6b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxwZXJzb24lMjBzbWlsaW5nfGVufDB8fHx8MTc2MTUzOTI1OHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "person smiling"
+    },
+    {
+      "id": "bracelet",
+      "description": "Close up of the Alerta Vital medical alert bracelet",
+      "imageUrl": "https://images.unsplash.com/photo-1721103428054-6bcf4f655594?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxicmFjZWxldHxlbnwwfHx8fDE3NjE1Njg1MDV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "bracelet"
+    },
+    {
+      "id": "user-profile",
+      "description": "Default user profile picture",
+      "imageUrl": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxwZXJzb24lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjE1NDUzOTl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "person portrait"
+    },
+    {
+      "id": "pet-profile",
+      "description": "Default pet profile picture",
+      "imageUrl": "https://images.unsplash.com/photo-1517849845537-4d257902454a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxkb2d8ZW58MHx8fHwxNzYxNDkzNzgyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "dog"
+    }
+  ]
+}

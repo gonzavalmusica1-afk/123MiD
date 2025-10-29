@@ -1,0 +1,12 @@
+{
+  "hosting": {
+    "rewrites": [
+      {
+        "source": "**",
+        "apphosting": {
+          "backendId": "123mid-app"
+        }
+      }
+    ]
+  }
+}

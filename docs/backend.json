@@ -1,0 +1,95 @@
+{
+  "entities": {
+    "Bracelet": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Bracelet",
+      "type": "object",
+      "description": "Represents a medical emergency bracelet, which is the core entity managed by users.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the bracelet."
+        },
+        "pin": {
+          "type": "string",
+          "description": "PIN associated with the bracelet for public verification."
+        },
+        "userId": {
+          "type": [ "string", "null" ],
+          "description": "Reference to the UserProfile who owns this bracelet. Null if unclaimed."
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the person or pet for the profile."
+        },
+        "photoUrl": {
+          "type": "string",
+          "description": "URL of the profile photo."
+        },
+        "privacy": {
+            "type": "string",
+            "description": "Privacy setting for the profile (public or private).",
+            "enum": ["public", "private"]
+        },
+        "profileType": {
+          "type": ["string", "null"],
+          "description": "Type of profile, e.g., 'person' or 'pet'. Null if unconfigured.",
+          "enum": ["person", "pet", null]
+        },
+        "dob": { "type": ["string", "null"], "format": "date" },
+        "bloodType": { "type": ["string", "null"] },
+        "allergies": { "type": ["string", "null"] },
+        "conditions": { "type": ["string", "null"] },
+        "contacts": {
+          "type": ["array", "null"],
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "relation": { "type": "string" },
+              "phone": { "type": "string" }
+            }
+          }
+        },
+        "claimed": { "type": "boolean" }
+      },
+      "required": [
+        "id",
+        "pin"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/users/{userId}",
+        "definition": {
+          "description": "Stores user-specific data, not directly manipulated by the main forms. Security rules should ensure only the authenticated user can access their own document."
+        }
+      },
+      {
+        "path": "/bracelets/{braceletId}",
+        "definition": {
+          "entityName": "Bracelet",
+          "schema": {
+            "$ref": "#/backend/entities/Bracelet"
+          },
+          "description": "Stores all bracelets. This is the primary collection for the application's core logic.",
+          "params": [
+            {
+              "name": "braceletId",
+              "description": "The unique identifier for the bracelet."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The structure is simplified to focus on the `bracelets` collection, which is the core of the application's functionality. The `/users/{userId}` path is kept for user-specific data that might be needed for app settings or metadata, protected by strict security rules. All profile data is now consolidated under the `Bracelet` entity, which simplifies data management and security rule logic."
+  }
+}

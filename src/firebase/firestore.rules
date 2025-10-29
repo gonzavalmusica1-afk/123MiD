@@ -1,0 +1,108 @@
+/**
+ * @file Firestore Security Rules for Alerta Vital
+ *
+ * Core Philosophy:
+ * This ruleset enforces a strict user-ownership model for user profiles and their associated medical profiles.
+ * Bracelets have a more flexible model, allowing public read access but restricting writes to authorized users.
+ *
+ * Data Structure:
+ * - /userProfiles/{userId}: Stores user profile data, owned by the user with matching UID.
+ * - /userProfiles/{userId}/medicalProfiles/{medicalProfileId}: Stores medical profiles, owned by the parent user.
+ * - /bracelets/{braceletId}: Stores bracelet data. Initially, anyone can read bracelets, but after claiming,
+ *   ownership is established via the userId field.
+ *
+ * Key Security Decisions:
+ * - User listing is disallowed to protect privacy (except for listing bracelets).
+ * - Public read access is granted to the /bracelets/{braceletId} collection for easy querying during the claiming process.
+ * - Ownership checks are performed using the `isOwner(userId)` helper function.
+ * - All writes are strictly controlled based on ownership or specific claim requirements.
+ *
+ * Denormalization for Authorization:
+ * - The `Bracelet` entity contains a `userId` field to enable ownership-based security rules after a bracelet is claimed.
+ *   This avoids costly `get()` calls to parent `UserProfile` documents to check ownership.
+ */
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /**
+     * @description Controls access to user profile documents.
+     * @path /userProfiles/{userProfileId}
+     * @allow (create) User with UID matching userProfileId can create their profile.
+     * @allow (get, update, delete) User with UID matching userProfileId can read, update, or delete their profile.
+     * @deny (create, update, delete) User with UID not matching userProfileId cannot create, update, or delete this profile.
+     * @principle Enforces document ownership for all operations.
+     */
+    match /userProfiles/{userProfileId} {
+      function isOwner(userId) {
+        return request.auth != null && request.auth.uid == userId;
+      }
+
+      function isExistingOwner(userId) {
+        return isOwner(userId) && resource != null;
+      }
+
+      allow get: if isOwner(userProfileId);
+      allow list: if false;
+
+      allow create: if isOwner(userProfileId) && request.resource.data.id == userProfileId;
+      allow update: if isExistingOwner(userProfileId) && request.resource.data.id == resource.data.id;
+      allow delete: if isExistingOwner(userProfileId);
+    }
+
+    /**
+     * @description Controls access to medical profile documents nested under user profiles.
+     * @path /userProfiles/{userProfileId}/medicalProfiles/{medicalProfileId}
+     * @allow (create) User with UID matching userProfileId can create a medical profile under their profile.
+     * @allow (get, update, delete) User with UID matching userProfileId can read, update, or delete their medical profile.
+     * @deny (create, update, delete) User with UID not matching userProfileId cannot create, update, or delete this medical profile.
+     * @principle Enforces document ownership for all operations.
+     */
+    match /userProfiles/{userProfileId}/medicalProfiles/{medicalProfileId} {
+      function isOwner(userId) {
+        return request.auth != null && request.auth.uid == userId;
+      }
+
+      function isExistingOwner(userId) {
+        return isOwner(userId) && resource != null;
+      }
+
+      allow get: if isOwner(userProfileId);
+      allow list: if isOwner(userProfileId);
+
+      allow create: if isOwner(userProfileId);
+      allow update: if isExistingOwner(userProfileId);
+      allow delete: if isExistingOwner(userProfileId);
+    }
+
+    /**
+     * @description Controls access to bracelet documents.
+     * @path /bracelets/{braceletId}
+     * @allow (get, list) Anyone can read/list bracelet documents to enable bracelet claiming.
+     * @allow (create) Only allowed before bracelet is claimed (no userId).
+     * @allow (update, delete) Only the owner (userId in document) can update or delete.
+     * @deny (create, update, delete) if not meeting the above conditions.
+     * @principle Allows public read access for claiming, but restricts write access to the owner after claiming.
+     */
+    match /bracelets/{braceletId} {
+      function isOwner(userId) {
+        return request.auth != null && request.auth.uid == userId;
+      }
+
+      function isExistingOwner(userId) {
+        return isOwner(userId) && resource != null;
+      }
+
+      // Allow read for all to enable querying by id and pin during claiming.
+      allow get: if true;
+      allow list: if true;
+
+      // Only allow create if the userId is not set (bracelet is unclaimed).
+      allow create: if request.resource.data.userId == null;
+
+      // After the bracelet is claimed, only the owner can update or delete.
+      allow update: if isExistingOwner(resource.data.userId);
+      allow delete: if isExistingOwner(resource.data.userId);
+    }
+  }
+}

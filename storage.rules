@@ -1,0 +1,12 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Las imágenes de perfil tienen una ruta predecible.
+    // Cualquiera puede leerlas (necesario para perfiles públicos).
+    // Solo el usuario propietario puede subir, actualizar o borrar su foto.
+    match /profile_pictures/{userId}/{allPaths=**} {
+      allow read: if true;
+      allow write, delete: if request.auth != null && request.auth.uid == userId;
+    }
+  }
+}
