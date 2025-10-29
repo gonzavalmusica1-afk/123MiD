@@ -27,6 +27,8 @@ const DemoProfileData = {
 export default function Home() {
   const braceletImage = placeholderImages.find(p => p.id === "bracelet");
   const demoProfile: Partial<Profile> = DemoProfileData;
+  const heroImage = placeholderImages.find(p => p.id === "hero");
+
 
   return (
     <div className="flex flex-col min-h-[100dvh]">
@@ -35,17 +37,17 @@ export default function Home() {
       <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48 bg-accent">
         <div className="container px-4 md:px-6">
           <div className="grid gap-12 lg:grid-cols-[1fr_400px] xl:grid-cols-[1fr_500px]">
-             <div className="flex flex-col justify-center space-y-4 order-1 lg:order-1">
+             <div className="flex flex-col justify-center space-y-4 order-1 text-center lg:text-left lg:order-1">
               <div className="space-y-2">
                 <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none font-headline">
                   Información que Salva Vidas, al Instante
                 </h1>
-                <p className="max-w-[600px] text-muted-foreground md:text-xl">
+                <p className="max-w-[600px] text-muted-foreground md:text-xl mx-auto lg:mx-0">
                   123MiD te conecta con tu información médica crucial en momentos de emergencia.
                   Una solución simple y segura para ti, tu familia y tus mascotas.
                 </p>
               </div>
-              <div className="flex flex-col gap-2 min-[400px]:flex-row">
+              <div className="flex flex-col gap-2 min-[400px]:flex-row justify-center lg:justify-start">
                 <Button asChild size="lg">
                   <Link href="/signup">Crear mi Cuenta Gratis</Link>
                 </Button>
