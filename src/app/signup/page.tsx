@@ -10,7 +10,7 @@ import Link from "next/link"
 import React, { useState } from "react"
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/firebase"
-import { createUserWithEmailAndPassword } from "firebase/auth"
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth"
 import { useToast } from "@/hooks/use-toast"
 import { Loader2 } from "lucide-react"
 
@@ -24,11 +24,12 @@ export default function SignupPage() {
     e.preventDefault();
     setIsLoading(true);
     const formData = new FormData(e.currentTarget);
+    const name = formData.get("name") as string;
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
     
-    if (!email || !password) {
-        toast({ variant: "destructive", title: "Campos Incompletos", description: "Por favor, completa el correo y la contraseña." });
+    if (!name || !email || !password) {
+        toast({ variant: "destructive", title: "Campos Incompletos", description: "Por favor, completa todos los campos." });
         setIsLoading(false);
         return;
     }
@@ -40,7 +41,11 @@ export default function SignupPage() {
     }
 
     try {
-        await createUserWithEmailAndPassword(auth, email, password);
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        // After creating the user, update their profile with the name
+        if (userCredential.user) {
+            await updateProfile(userCredential.user, { displayName: name });
+        }
         router.push("/dashboard");
     } catch (error: any) {
         let errorMessage = "Ocurrió un error durante el registro.";
@@ -65,8 +70,8 @@ export default function SignupPage() {
             <CardContent>
                 <form onSubmit={handleSignup} className="grid gap-4">
                     <div className="grid gap-2">
-                        <Label htmlFor="first-name">Nombre</Label>
-                        <Input id="first-name" placeholder="Juan Pérez" required disabled={isLoading} />
+                        <Label htmlFor="name">Nombre</Label>
+                        <Input id="name" name="name" placeholder="Juan Pérez" required disabled={isLoading} />
                     </div>
                     <div className="grid gap-2">
                         <Label htmlFor="email">Correo Electrónico</Label>
