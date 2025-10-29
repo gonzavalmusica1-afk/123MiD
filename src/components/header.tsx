@@ -188,14 +188,6 @@ export function Header() {
             <div className="h-10 w-44 rounded-md bg-muted animate-pulse" />
         ) : user ? (
           <div className="flex items-center gap-4">
-            {isDashboard && (
-                 <Button asChild className="gap-1 hidden sm:flex">
-                    <Link href="/dashboard/registrar">
-                        <PlusCircle className="h-4 w-4" />
-                        Registrar Pulsera
-                    </Link>
-                </Button>
-            )}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="relative h-8 w-8 rounded-full">
