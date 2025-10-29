@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { useAuth, useUser } from "@/firebase";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from "@/components/ui/dialog";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { Label } from "./ui/label";
@@ -87,7 +87,7 @@ function RescuerAccessModal({ asChild = false }: { asChild?: boolean }) {
       </div>
     </div>
   ) : (
-    <Button variant="outline">
+    <Button variant="destructive">
       <Search className="mr-2 h-4 w-4" />
       Acceso Rescatista
     </Button>
@@ -201,7 +201,7 @@ export function Header() {
                 <Button variant="ghost" className="relative h-8 w-8 rounded-full">
                   <Avatar className="h-9 w-9">
                     <AvatarImage src={user.photoURL || undefined} alt="Avatar" />
-                    <AvatarFallback>{user.displayName?.charAt(0).toUpperCase() || user.email?.charAt(0).toUpperCase() || 'U'}</AvatarFallback>
+                    <AvatarFallback>{user.email?.charAt(0).toUpperCase() || 'U'}</AvatarFallback>
                   </Avatar>
                 </Button>
               </DropdownMenuTrigger>
@@ -227,30 +227,33 @@ export function Header() {
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
-        ) : isMobile ? (
-             <Sheet>
-                <SheetTrigger asChild>
-                    <Button variant="ghost" size="icon">
-                        <Menu className="h-6 w-6" />
-                        <span className="sr-only">Abrir Menú</span>
-                    </Button>
-                </SheetTrigger>
-                <SheetContent side="right" className="w-[300px] sm:w-[400px]">
-                    <nav className="flex flex-col gap-4 pt-10">
-                        <RescuerAccessModal asChild={true} />
-                        <div className="mt-4 flex flex-col gap-2">{guestLinks}</div>
-                    </nav>
-                </SheetContent>
-            </Sheet>
         ) : (
           <div className="flex items-center gap-2">
             <RescuerAccessModal />
-            <Button variant="ghost" asChild>
-                <Link href="/login">Iniciar Sesión</Link>
-            </Button>
-            <Button asChild>
-                <Link href="/signup">Registrarse</Link>
-            </Button>
+            {isMobile ? (
+                 <Sheet>
+                    <SheetTrigger asChild>
+                        <Button variant="ghost" size="icon">
+                            <Menu className="h-6 w-6" />
+                            <span className="sr-only">Abrir Menú</span>
+                        </Button>
+                    </SheetTrigger>
+                    <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+                        <nav className="flex flex-col gap-4 pt-10">
+                            {guestLinks}
+                        </nav>
+                    </SheetContent>
+                </Sheet>
+            ) : (
+              <>
+                <Button variant="ghost" asChild>
+                    <Link href="/login">Iniciar Sesión</Link>
+                </Button>
+                <Button asChild>
+                    <Link href="/signup">Registrarse</Link>
+                </Button>
+              </>
+            )}
           </div>
         )}
       </nav>
