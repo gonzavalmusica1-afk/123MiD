@@ -87,7 +87,7 @@ function RescuerAccessModal({ asChild = false }: { asChild?: boolean }) {
       </div>
     </div>
   ) : (
-    <Button variant="destructive">
+    <Button variant="outline" className="shadow-sm hover:shadow-md transition-shadow">
       <Search className="mr-2 h-4 w-4" />
       Acceso Rescatista
     </Button>
