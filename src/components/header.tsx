@@ -33,7 +33,7 @@ const MedicalCrossIcon = (props: React.SVGProps<SVGSVGElement>) => (
       height="24"
       viewBox="0 0 24 24"
       fill="none"
-      stroke="currentColor"
+      stroke="hsl(var(--primary))"
       strokeWidth="2.5"
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -87,7 +87,7 @@ function RescuerAccessModal({ asChild = false }: { asChild?: boolean }) {
       </div>
     </div>
   ) : (
-    <Button variant="outline" className="shadow-sm hover:shadow-md transition-shadow border-primary/50 text-primary hover:bg-primary/5 hover:text-primary">
+    <Button variant="outline" className="font-bold shadow-sm hover:shadow-md transition-shadow border-primary/50 text-primary hover:bg-primary/5 hover:text-primary">
       <Search className="mr-2 h-4 w-4 text-primary" />
       Acceso Rescatista
     </Button>
@@ -180,7 +180,7 @@ export function Header() {
   return (
     <header className="px-4 lg:px-6 h-16 flex items-center border-b bg-background shadow-sm">
       <Link className="flex items-center justify-center" href="/">
-        <MedicalCrossIcon className="h-6 w-6 text-primary" />
+        <MedicalCrossIcon className="h-6 w-6" />
         <span className="ml-2 text-lg font-semibold font-headline">123MiD</span>
       </Link>
       <nav className="ml-auto flex gap-4 sm:gap-6 items-center">
