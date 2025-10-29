@@ -35,21 +35,7 @@ export default function Home() {
       <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48 bg-accent">
         <div className="container px-4 md:px-6">
           <div className="grid gap-12 lg:grid-cols-[1fr_400px] xl:grid-cols-[1fr_500px]">
-             {/* iPhone Mockup */}
-            <div className="relative mx-auto border-gray-800 dark:border-gray-800 bg-gray-800 border-[14px] rounded-[2.5rem] h-[600px] w-[300px] shadow-xl lg:order-last">
-                <div className="w-[148px] h-[18px] bg-gray-800 top-0 rounded-b-[1rem] left-1/2 -translate-x-1/2 absolute"></div>
-                <div className="h-[46px] w-[3px] bg-gray-800 absolute -left-[17px] top-[124px] rounded-l-lg"></div>
-                <div className="h-[46px] w-[3px] bg-gray-800 absolute -left-[17px] top-[178px] rounded-l-lg"></div>
-                <div className="h-[64px] w-[3px] bg-gray-800 absolute -right-[17px] top-[142px] rounded-r-lg"></div>
-                <div className="rounded-[2rem] overflow-y-auto w-full h-full bg-white dark:bg-black">
-                    {/* Simplified Profile View */}
-                    <div className="min-h-full bg-muted/40">
-                         <ProfileView profile={demoProfile} isMockup={true} />
-                    </div>
-                </div>
-            </div>
-
-            <div className="flex flex-col justify-center space-y-4">
+             <div className="flex flex-col justify-center space-y-4">
               <div className="space-y-2">
                 <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none font-headline">
                   Información que Salva Vidas, al Instante
@@ -67,6 +53,19 @@ export default function Home() {
                   <Link href="/perfil/demostracion">Ver Perfil Completo</Link>
                 </Button>
               </div>
+            </div>
+            {/* iPhone Mockup */}
+            <div className="relative mx-auto border-gray-800 dark:border-gray-800 bg-gray-800 border-[14px] rounded-[2.5rem] h-[600px] w-[300px] shadow-xl">
+                <div className="w-[148px] h-[18px] bg-gray-800 top-0 rounded-b-[1rem] left-1/2 -translate-x-1/2 absolute"></div>
+                <div className="h-[46px] w-[3px] bg-gray-800 absolute -left-[17px] top-[124px] rounded-l-lg"></div>
+                <div className="h-[46px] w-[3px] bg-gray-800 absolute -left-[17px] top-[178px] rounded-l-lg"></div>
+                <div className="h-[64px] w-[3px] bg-gray-800 absolute -right-[17px] top-[142px] rounded-r-lg"></div>
+                <div className="rounded-[2rem] overflow-y-auto w-full h-full bg-white dark:bg-black">
+                    {/* Simplified Profile View */}
+                    <div className="min-h-full bg-muted/40">
+                         <ProfileView profile={demoProfile} isMockup={true} />
+                    </div>
+                </div>
             </div>
           </div>
         </div>
