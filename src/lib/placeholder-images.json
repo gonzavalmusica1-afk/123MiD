@@ -2,9 +2,9 @@
   "placeholderImages": [
     {
       "id": "hero",
-      "description": "A smiling elderly person with a healthcare professional, conveying trust and care.",
-      "imageUrl": "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxoZWFsdGhjYXJlJTIwcHJvZmVzc2lvbmFsfGVufDB8fHx8MTcyMjI4NjA1NHww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "healthcare professional"
+      "description": "A close-up of a medical alert bracelet on a person's wrist.",
+      "imageUrl": "https://images.unsplash.com/photo-1585060141679-5c793158b427?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxtZWRpY2FsJTIwYnJhY2VsZXR8ZW58MHx8fHwxNzIyMjg4MDAwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "medical bracelet"
     },
     {
       "id": "bracelet",
