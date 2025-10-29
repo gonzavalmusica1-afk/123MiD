@@ -1,7 +1,7 @@
 
 "use client"
 
-import { LogOut, LayoutDashboard, PlusCircle, Search } from "lucide-react";
+import { LogOut, LayoutDashboard, PlusCircle, Search, Menu, LifeBuoy } from "lucide-react";
 import Link from "next/link";
 import { Button } from "./ui/button";
 import { usePathname, useRouter } from "next/navigation";
@@ -15,13 +15,15 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { useAuth, useUser } from "@/firebase";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from "@/components/ui/dialog";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
+import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const MedicalCrossIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg
@@ -43,7 +45,7 @@ const MedicalCrossIcon = (props: React.SVGProps<SVGSVGElement>) => (
     </svg>
   );
 
-function RescuerAccessModal() {
+function RescuerAccessModal({ asChild = false }: { asChild?: boolean }) {
   const router = useRouter();
   const { toast } = useToast();
   
@@ -77,14 +79,25 @@ function RescuerAccessModal() {
     router.push(`/perfil/${braceletId}?pin=${pin}`);
   };
 
+  const TriggerComponent = asChild ? (
+    <div className="w-full flex items-center justify-between">
+      <div className="flex items-center gap-4">
+        <LifeBuoy className="h-5 w-5 text-primary" />
+        <span>Acceso Rescatista</span>
+      </div>
+    </div>
+  ) : (
+    <Button variant="outline">
+      <Search className="mr-2 h-4 w-4" />
+      Acceso Rescatista
+    </Button>
+  );
+
   return (
     <>
       <Dialog open={isIdModalOpen} onOpenChange={setIsIdModalOpen}>
         <DialogTrigger asChild>
-          <Button variant="outline">
-            <Search className="mr-2 h-4 w-4" />
-            Acceso Rescatista
-          </Button>
+          {TriggerComponent}
         </DialogTrigger>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
@@ -142,11 +155,27 @@ export function Header() {
   const auth = useAuth();
   const { user, isUserLoading } = useUser();
   const isDashboard = pathname.startsWith('/dashboard');
+  const isMobile = useIsMobile();
 
   const handleLogout = () => {
     auth.signOut();
     router.push('/');
   }
+  
+  const guestLinks = (
+      <>
+        <SheetClose asChild>
+          <Button variant="ghost" asChild className="w-full justify-start text-base py-6">
+            <Link href="/login">Iniciar Sesión</Link>
+          </Button>
+        </SheetClose>
+        <SheetClose asChild>
+          <Button asChild className="w-full justify-start text-base py-6">
+            <Link href="/signup">Registrarse</Link>
+          </Button>
+        </SheetClose>
+      </>
+    );
 
   return (
     <header className="px-4 lg:px-6 h-16 flex items-center border-b bg-background shadow-sm">
@@ -160,7 +189,7 @@ export function Header() {
         ) : user ? (
           <div className="flex items-center gap-4">
             {isDashboard && (
-                 <Button asChild className="gap-1">
+                 <Button asChild className="gap-1 hidden sm:flex">
                     <Link href="/dashboard/registrar">
                         <PlusCircle className="h-4 w-4" />
                         Registrar Pulsera
@@ -198,6 +227,21 @@ export function Header() {
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
+        ) : isMobile ? (
+             <Sheet>
+                <SheetTrigger asChild>
+                    <Button variant="ghost" size="icon">
+                        <Menu className="h-6 w-6" />
+                        <span className="sr-only">Abrir Menú</span>
+                    </Button>
+                </SheetTrigger>
+                <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+                    <nav className="flex flex-col gap-4 pt-10">
+                        <RescuerAccessModal asChild={true} />
+                        <div className="mt-4 flex flex-col gap-2">{guestLinks}</div>
+                    </nav>
+                </SheetContent>
+            </Sheet>
         ) : (
           <div className="flex items-center gap-2">
             <RescuerAccessModal />
