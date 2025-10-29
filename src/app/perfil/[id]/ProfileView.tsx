@@ -57,9 +57,10 @@ export default function ProfileView({ profile, isMockup = false }: { profile: Pa
                         </div>
                         <CardTitle className="text-3xl font-bold font-headline text-primary-foreground bg-primary rounded-lg py-1">{profile.name}</CardTitle>
                         {formattedDob && (
-                            <CardDescription className="text-lg text-foreground/80 pt-2">
-                                {formattedDob} {age !== null && `(${age} años)`}
-                            </CardDescription>
+                            <div className="pt-2">
+                                <p className="text-lg text-foreground/80">{formattedDob}</p>
+                                {age !== null && <p className="text-base text-muted-foreground">{age} años</p>}
+                            </div>
                         )}
                     </CardHeader>
                     <CardContent className="p-6 grid gap-6">
