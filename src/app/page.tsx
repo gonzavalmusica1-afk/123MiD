@@ -3,54 +3,14 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
-import { CheckCircle, HeartPulse, PawPrint, Search, Loader2, Plus, ShieldCheck } from "lucide-react";
+import { CheckCircle, HeartPulse, PawPrint, ShieldCheck } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { placeholderImages } from "@/lib/placeholder-images";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { useRouter } from "next/navigation";
-import { useToast } from "@/hooks/use-toast";
-import React, { useState } from 'react';
 
 export default function Home() {
   const heroImage = placeholderImages.find(p => p.id === "hero");
   const braceletImage = placeholderImages.find(p => p.id === "bracelet");
-  const router = useRouter();
-  const { toast } = useToast();
-  
-  const [isLoading, setIsLoading] = useState(false);
-  const [braceletId, setBraceletId] = useState('');
-  const [isPinModalOpen, setIsPinModalOpen] = useState(false);
-
-  const handleIdSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const id = (formData.get("id") as string)?.trim();
-
-    if (!id) {
-      toast({
-        variant: "destructive",
-        title: "ID Requerido",
-        description: "Por favor, ingresa el ID de la pulsera.",
-      });
-      return;
-    }
-    
-    setBraceletId(id.toLowerCase());
-    setIsPinModalOpen(true);
-  };
-  
-  const handlePinSubmit = (pin: string) => {
-    setIsLoading(true);
-    setIsPinModalOpen(false);
-    // Redirect to the profile page with the PIN as a query parameter
-    // The profile page will handle the verification logic
-    router.push(`/perfil/${braceletId}?pin=${pin}`);
-  };
-
 
   return (
     <div className="flex flex-col min-h-[100dvh]">
@@ -92,60 +52,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
-      {/* 🚑 ACCESO PARA RESCATISTAS */}
-      <section id="rescuer" className="w-full py-12 md:py-24 lg:py-32 bg-muted/40">
-        <div className="container px-4 md:px-6">
-          <Card className="max-w-2xl mx-auto">
-            <CardHeader>
-              <CardTitle className="text-2xl flex items-center gap-2 font-headline">
-                <Search className="h-6 w-6 text-primary" />
-                Acceso para Rescatistas
-              </CardTitle>
-              <CardDescription>
-                ¿Encontraste a alguien con una pulsera 123MiD? Ingresa su ID para acceder al perfil de emergencia.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form
-                onSubmit={handleIdSubmit}
-                className="flex flex-col sm:flex-row items-stretch sm:items-end gap-2"
-              >
-                <div className="grid gap-1.5 flex-grow w-full">
-                  <Label htmlFor="rescuer-id">ID de la Pulsera</Label>
-                  <Input id="rescuer-id" name="id" type="text" placeholder="AV-XXXXX" disabled={isLoading} />
-                </div>
-                <Button type="submit" className="w-full sm:w-auto" disabled={isLoading}>
-                   {isLoading ? <Loader2 className="animate-spin" /> : "Buscar"}
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
-      
-      {/* PIN Modal */}
-      <Dialog open={isPinModalOpen} onOpenChange={setIsPinModalOpen}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle className="text-center font-headline text-2xl">Verificar PIN</DialogTitle>
-            <DialogDescription className="text-center">
-              Ingresa el PIN de 4 dígitos para la pulsera <span className="font-bold text-primary">{braceletId.toUpperCase()}</span>.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="flex items-center justify-center space-y-4 py-4">
-            <InputOTP maxLength={4} onComplete={handlePinSubmit}>
-              <InputOTPGroup>
-                <InputOTPSlot index={0} />
-                <InputOTPSlot index={1} />
-                <InputOTPSlot index={2} />
-                <InputOTPSlot index={3} />
-              </InputOTPGroup>
-            </InputOTP>
-          </div>
-        </DialogContent>
-      </Dialog>
-
 
       {/* FEATURES */}
       <section id="features" className="w-full py-12 md:py-24 lg:py-32">
@@ -270,5 +176,3 @@ export default function Home() {
     </div>
   );
 }
-
-    

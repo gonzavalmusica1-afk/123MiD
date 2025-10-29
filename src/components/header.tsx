@@ -1,7 +1,7 @@
 
 "use client"
 
-import { LogOut, LayoutDashboard, PlusCircle } from "lucide-react";
+import { LogOut, LayoutDashboard, PlusCircle, Search } from "lucide-react";
 import Link from "next/link";
 import { Button } from "./ui/button";
 import { usePathname, useRouter } from "next/navigation";
@@ -15,6 +15,13 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { useAuth, useUser } from "@/firebase";
+import React, { useState } from "react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from "@/components/ui/dialog";
+import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
+import { Label } from "./ui/label";
+import { Input } from "./ui/input";
+import { useToast } from "@/hooks/use-toast";
+import { Loader2 } from "lucide-react";
 
 const MedicalCrossIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg
@@ -35,6 +42,98 @@ const MedicalCrossIcon = (props: React.SVGProps<SVGSVGElement>) => (
       <path d="M17 12H23" />
     </svg>
   );
+
+function RescuerAccessModal() {
+  const router = useRouter();
+  const { toast } = useToast();
+  
+  const [isLoading, setIsLoading] = useState(false);
+  const [braceletId, setBraceletId] = useState('');
+  const [isPinModalOpen, setIsPinModalOpen] = useState(false);
+  const [isIdModalOpen, setIsIdModalOpen] = useState(false);
+
+  const handleIdSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const id = (formData.get("id") as string)?.trim();
+
+    if (!id) {
+      toast({
+        variant: "destructive",
+        title: "ID Requerido",
+        description: "Por favor, ingresa el ID de la pulsera.",
+      });
+      return;
+    }
+    
+    setBraceletId(id.toLowerCase());
+    setIsIdModalOpen(false);
+    setIsPinModalOpen(true);
+  };
+  
+  const handlePinSubmit = (pin: string) => {
+    setIsLoading(true);
+    setIsPinModalOpen(false);
+    router.push(`/perfil/${braceletId}?pin=${pin}`);
+  };
+
+  return (
+    <>
+      <Dialog open={isIdModalOpen} onOpenChange={setIsIdModalOpen}>
+        <DialogTrigger asChild>
+          <Button variant="outline">
+            <Search className="mr-2 h-4 w-4" />
+            Acceso Rescatista
+          </Button>
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-2xl flex items-center gap-2 font-headline">
+              <Search className="h-6 w-6 text-primary" />
+              Acceso para Rescatistas
+            </DialogTitle>
+            <DialogDescription>
+              Ingresa el ID de la pulsera para acceder al perfil de emergencia.
+            </DialogDescription>
+          </DialogHeader>
+          <form
+            onSubmit={handleIdSubmit}
+            className="flex flex-col sm:flex-row items-stretch sm:items-end gap-2 pt-4"
+          >
+            <div className="grid gap-1.5 flex-grow w-full">
+              <Label htmlFor="rescuer-id-modal">ID de la Pulsera</Label>
+              <Input id="rescuer-id-modal" name="id" type="text" placeholder="AV-XXXXX" disabled={isLoading} autoFocus />
+            </div>
+            <Button type="submit" className="w-full sm:w-auto" disabled={isLoading}>
+               {isLoading ? <Loader2 className="animate-spin" /> : "Buscar"}
+            </Button>
+          </form>
+        </DialogContent>
+      </Dialog>
+      
+      <Dialog open={isPinModalOpen} onOpenChange={setIsPinModalOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-center font-headline text-2xl">Verificar PIN</DialogTitle>
+            <DialogDescription className="text-center">
+              Ingresa el PIN de 4 dígitos para la pulsera <span className="font-bold text-primary">{braceletId.toUpperCase()}</span>.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex items-center justify-center space-y-4 py-4">
+            <InputOTP maxLength={4} onComplete={handlePinSubmit}>
+              <InputOTPGroup>
+                <InputOTPSlot index={0} />
+                <InputOTPSlot index={1} />
+                <InputOTPSlot index={2} />
+                <InputOTPSlot index={3} />
+              </InputOTPGroup>
+            </InputOTP>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
+  )
+}
   
 
 export function Header() {
@@ -57,7 +156,7 @@ export function Header() {
       </Link>
       <nav className="ml-auto flex gap-4 sm:gap-6 items-center">
         {isUserLoading ? (
-            <div className="h-8 w-8 rounded-full bg-muted animate-pulse" />
+            <div className="h-10 w-44 rounded-md bg-muted animate-pulse" />
         ) : user ? (
           <div className="flex items-center gap-4">
             {isDashboard && (
@@ -100,14 +199,15 @@ export function Header() {
             </DropdownMenu>
           </div>
         ) : (
-          <>
+          <div className="flex items-center gap-2">
+            <RescuerAccessModal />
             <Button variant="ghost" asChild>
                 <Link href="/login">Iniciar Sesión</Link>
             </Button>
             <Button asChild>
                 <Link href="/signup">Registrarse</Link>
             </Button>
-          </>
+          </div>
         )}
       </nav>
     </header>
