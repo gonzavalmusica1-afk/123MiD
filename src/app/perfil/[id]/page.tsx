@@ -16,7 +16,7 @@ import { Profile } from "@/lib/profiles"
 // Mock Data for the demo profile
 const DemoProfileData = {
     name: "Juan Pérez (Demostración)",
-    dob: "23 de Abril, 1985",
+    dob: "1985-04-23",
     bloodType: "O+",
     allergies: "Penicilina, Nueces",
     conditions: "Asma, Hipertensión",
@@ -185,5 +185,3 @@ export default function PublicProfilePage() {
         </Suspense>
     )
 }
-
-    

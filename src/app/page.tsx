@@ -12,7 +12,7 @@ import type { Profile } from "@/lib/profiles";
 
 const DemoProfileData = {
     name: "Juan Pérez (Demo)",
-    dob: "23 de Abril, 1985",
+    dob: "1985-04-23",
     bloodType: "O+",
     allergies: "Penicilina, Nueces",
     conditions: "Asma, Hipertensión",

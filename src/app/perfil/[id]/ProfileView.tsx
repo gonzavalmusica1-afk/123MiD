@@ -5,11 +5,37 @@ import { placeholderImages } from "@/lib/placeholder-images"
 import { ShieldAlert, Heart, Phone } from "lucide-react"
 import { Profile } from "@/lib/profiles"
 import { cn } from "@/lib/utils"
+import { differenceInYears, parseISO } from "date-fns"
+
+function getAge(dob: string) {
+    try {
+        const birthDate = parseISO(dob);
+        const age = differenceInYears(new Date(), birthDate);
+        return age;
+    } catch (error) {
+        return null;
+    }
+}
+
+function formatDate(dob: string) {
+    try {
+        const date = parseISO(dob);
+        return new Intl.DateTimeFormat('es-ES', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        }).format(date);
+    } catch(error) {
+        return dob;
+    }
+}
 
 export default function ProfileView({ profile, isMockup = false }: { profile: Partial<Profile>, isMockup?: boolean }) {
     const fallbackAvatar = placeholderImages.find(p => p.id === (profile.profileType === 'pet' ? "pet-profile" : "user-profile"));
     const avatarUrl = profile.photoUrl || fallbackAvatar?.imageUrl;
     const avatarHint = profile.photoUrl ? profile.name : fallbackAvatar?.imageHint;
+    const age = profile.dob ? getAge(profile.dob) : null;
+    const formattedDob = profile.dob ? formatDate(profile.dob) : null;
 
 
     return (
@@ -30,7 +56,11 @@ export default function ProfileView({ profile, isMockup = false }: { profile: Pa
                             </Avatar>
                         </div>
                         <CardTitle className="text-3xl font-bold font-headline text-primary-foreground bg-primary rounded-lg py-1">{profile.name}</CardTitle>
-                        <CardDescription className="text-lg text-foreground/80 pt-2">{profile.dob}</CardDescription>
+                        {formattedDob && (
+                            <CardDescription className="text-lg text-foreground/80 pt-2">
+                                {formattedDob} {age !== null && `(${age} años)`}
+                            </CardDescription>
+                        )}
                     </CardHeader>
                     <CardContent className="p-6 grid gap-6">
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-center">
@@ -75,5 +105,3 @@ export default function ProfileView({ profile, isMockup = false }: { profile: Pa
         </div>
     )
 }
-
-    
