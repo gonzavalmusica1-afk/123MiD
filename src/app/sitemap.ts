@@ -11,7 +11,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/privacidad',
     '/terminos',
     '/perfil/demostracion',
-    '/tienda',
     '/recuperar-contrasena',
   ];
 
