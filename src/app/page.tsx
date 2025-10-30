@@ -3,7 +3,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { CheckCircle, HeartPulse, PawPrint, ShieldCheck } from "lucide-react";
+import { CheckCircle, HeartPulse, PawPrint, ShieldCheck, ShoppingCart } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { placeholderImages } from "@/lib/placeholder-images";
@@ -123,36 +123,54 @@ export default function Home() {
               ¿Cómo Funciona?
             </h2>
             <p className="max-w-[600px] text-muted-foreground md:text-xl/relaxed">
-              En tres simples pasos, tu información vital estará protegida y accesible.
+              En solo 5 pasos, tu información vital estará protegida y accesible para quien más lo necesita.
             </p>
             <ul className="grid gap-4">
-              <li className="flex items-start gap-4">
-                <CheckCircle className="mt-1 h-6 w-6 flex-shrink-0 text-primary" />
-                <div>
-                  <h3 className="font-bold">1. Registra tu Pulsera</h3>
-                  <p className="text-muted-foreground">
-                    Crea tu cuenta y activa tu pulsera con el ID y PIN únicos que vienen con ella.
-                  </p>
-                </div>
-              </li>
-              <li className="flex items-start gap-4">
-                <CheckCircle className="mt-1 h-6 w-6 flex-shrink-0 text-primary" />
-                <div>
-                  <h3 className="font-bold">2. Completa tu Perfil</h3>
-                  <p className="text-muted-foreground">
-                    Añade tu información médica, contactos de emergencia y una foto. ¡No olvides a tus mascotas!
-                  </p>
-                </div>
-              </li>
-              <li className="flex items-start gap-4">
-                <CheckCircle className="mt-1 h-6 w-6 flex-shrink-0 text-primary" />
-                <div>
-                  <h3 className="font-bold">3. Elige tu Privacidad</h3>
-                  <p className="text-muted-foreground">
-                    Configura tu perfil como público para emergencias, o privado para máxima discreción.
-                  </p>
-                </div>
-              </li>
+                <li className="flex items-start gap-4">
+                    <ShoppingCart className="mt-1 h-6 w-6 flex-shrink-0 text-primary" />
+                    <div>
+                        <h3 className="font-bold">1. Compra tu Pulsera</h3>
+                        <p className="text-muted-foreground">
+                            Elige el modelo que más te guste en nuestra <Link href="/tienda" className="text-primary underline">tienda online</Link>. ¡Hay uno para cada estilo!
+                        </p>
+                    </div>
+                </li>
+                <li className="flex items-start gap-4">
+                    <CheckCircle className="mt-1 h-6 w-6 flex-shrink-0 text-primary" />
+                    <div>
+                        <h3 className="font-bold">2. Crea tu Cuenta</h3>
+                        <p className="text-muted-foreground">
+                            Regístrate gratis en nuestra plataforma para poder gestionar tus perfiles.
+                        </p>
+                    </div>
+                </li>
+                <li className="flex items-start gap-4">
+                    <CheckCircle className="mt-1 h-6 w-6 flex-shrink-0 text-primary" />
+                    <div>
+                        <h3 className="font-bold">3. Activa la Pulsera</h3>
+                        <p className="text-muted-foreground">
+                           Usa el ID y PIN únicos que vienen con tu pulsera para vincularla a tu cuenta.
+                        </p>
+                    </div>
+                </li>
+                <li className="flex items-start gap-4">
+                    <CheckCircle className="mt-1 h-6 w-6 flex-shrink-0 text-primary" />
+                    <div>
+                        <h3 className="font-bold">4. Completa tu Perfil</h3>
+                        <p className="text-muted-foreground">
+                            Añade tu información médica, contactos de emergencia y una foto. ¡No olvides a tus mascotas!
+                        </p>
+                    </div>
+                </li>
+                <li className="flex items-start gap-4">
+                    <CheckCircle className="mt-1 h-6 w-6 flex-shrink-0 text-primary" />
+                    <div>
+                        <h3 className="font-bold">5. Elige tu Privacidad</h3>
+                        <p className="text-muted-foreground">
+                            Configura tu perfil como público para emergencias, o privado para máxima discreción.
+                        </p>
+                    </div>
+                </li>
             </ul>
           </div>
           {braceletImage && (
@@ -193,3 +211,5 @@ export default function Home() {
     </div>
   );
 }
+
+    
