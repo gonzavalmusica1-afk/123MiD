@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Checkbox } from "@/components/ui/checkbox"
 import Link from "next/link"
 import React, { useState } from "react"
 import { useRouter } from "next/navigation"
@@ -88,13 +87,7 @@ export default function SignupPage() {
                         <Label htmlFor="password">Contraseña (mín. 6 caracteres)</Label>
                         <Input id="password" name="password" type="password" required disabled={isLoading}/>
                     </div>
-                    <div className="flex items-center space-x-2">
-                        <Checkbox id="terms" required />
-                        <Label htmlFor="terms" className="text-sm font-normal text-muted-foreground">
-                            Acepto los <Link href="/terminos" className="underline hover:text-primary">Términos de Servicio</Link>
-                        </Label>
-                    </div>
-                    <Button type="submit" className="w-full" disabled={isLoading}>
+                    <Button type="submit" className="w-full mt-4" disabled={isLoading}>
                         {isLoading ? <Loader2 className="animate-spin" /> : "Crear Cuenta"}
                     </Button>
                 </form>
