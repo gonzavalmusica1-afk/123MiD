@@ -54,27 +54,32 @@ function RescuerAccessModal({ asChild = false }: { asChild?: boolean }) {
   const handleIdSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
-    const formData = new FormData(e.currentTarget);
-    const id = (formData.get("id") as string)?.trim();
+    try {
+        const formData = new FormData(e.currentTarget);
+        const id = (formData.get("id") as string)?.trim();
 
-    if (!id) {
-      toast({
-        variant: "destructive",
-        title: "ID Requerido",
-        description: "Por favor, ingresa el ID de la pulsera.",
-      });
-      setIsLoading(false);
-      return;
+        if (!id) {
+            toast({
+                variant: "destructive",
+                title: "ID Requerido",
+                description: "Por favor, ingresa el ID de la pulsera.",
+            });
+            return;
+        }
+        
+        router.push(`/perfil/${id.toLowerCase()}`);
+        setIsIdModalOpen(false); // Close modal on successful navigation start
+    } catch (error) {
+        toast({ variant: "destructive", title: "Error", description: "Ocurrió un error inesperado."});
+    } finally {
+        setIsLoading(false);
     }
-    
-    router.push(`/perfil/${id.toLowerCase()}`);
-    // The modal will close automatically on navigation
   };
 
   const handleOpenChange = (isOpen: boolean) => {
     setIsIdModalOpen(isOpen);
     if (!isOpen) {
-      // Reset state when the modal closes
+      // Reset state when the modal closes, ensures clean state for next open
       setIsLoading(false);
     }
   }
