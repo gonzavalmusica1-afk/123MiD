@@ -11,49 +11,62 @@ export default function PrivacyPage() {
             <div className="max-w-3xl mx-auto">
                 <h1 className="text-4xl font-bold font-headline mb-4">Política de Privacidad</h1>
                 <div className="space-y-6 text-muted-foreground">
-                    <p>Última actualización: {new Date().toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                    <p>Fecha de versión: 23 de octubre de 2025</p>
+                    <p>Esta Política aplica al sitio y 123MiD (manillas médicas con QR y perfil en línea). Se redacta en lenguaje claro y cumple con la Ley 1581 de 2012 y el Decreto 1377 de 2013 (Habeas Data) de Colombia.</p>
                     
-                    <h2 className="text-2xl font-bold text-foreground">1. Introducción</h2>
-                    <p>
-                        Esta Política de Privacidad describe cómo 123MiD ("nosotros", "nuestro") recopila, utiliza y comparte información sobre usted a través de nuestras plataformas en línea. Al utilizar nuestro servicio, usted acepta la recopilación, transferencia, almacenamiento, divulgación y uso de su información como se describe en esta Política de Privacidad.
-                    </p>
-
-                    <h2 className="text-2xl font-bold text-foreground">2. Información que Recopilamos</h2>
-                    <p>
-                        Recopilamos información que usted nos proporciona directamente, como cuando crea una cuenta, completa su perfil médico o se comunica con nosotros. Esto puede incluir:
-                    </p>
-                    <ul>
-                        <li>- Información de la cuenta: Nombre, correo electrónico, contraseña.</li>
-                        <li>- Información Médica: Tipo de sangre, alergias, condiciones médicas, contactos de emergencia, etc.</li>
-                        <li>- Información de la mascota: Si aplica, detalles sobre su mascota.</li>
+                    <h3 className="text-2xl font-bold text-foreground pt-4">1) Responsable del tratamiento</h3>
+                    <ul className="list-disc pl-5 space-y-2">
+                        <li>Responsable: 123MiD</li>
+                        <li>Finalidad: proveer perfiles médicos de emergencia vinculados a QR, gestión de cuenta y facturación del plan Plus.</li>
+                        <li>Contacto para derechos de datos: <a href="mailto:contacto@123mid.com" className="text-primary underline">contacto@123mid.com</a></li>
                     </ul>
 
-                    <h2 className="text-2xl font-bold text-foreground">3. Cómo Usamos la Información</h2>
-                    <p>
-                        Utilizamos la información que recopilamos para:
-                    </p>
-                    <ul>
-                        <li>- Proporcionar, mantener y mejorar nuestros servicios.</li>
-                        <li>- Permitir el acceso a su perfil médico en caso de emergencia, según su configuración de privacidad.</li>
-                        <li>- Comunicarnos con usted sobre su cuenta y nuestros servicios.</li>
+                    <h3 className="text-2xl font-bold text-foreground pt-4">2) Datos que tratamos</h3>
+                    <ul className="list-disc pl-5 space-y-2">
+                        <li>Identificación y contacto: nombre, correo, teléfono.</li>
+                        <li>Datos de salud que decides registrar: alergias, medicamentos, contactos de emergencia, documentos médicos.</li>
+                        <li>Datos de uso: IP aproximada, dispositivo, analítica esencial del sitio.</li>
+                        <li>Pagos (solo Plus): referencia de transacción y estado. El número de tarjeta se procesa en la pasarela y no se almacena en 123MiD.</li>
                     </ul>
 
-                    <h2 className="text-2xl font-bold text-foreground">4. Cómo Compartimos la Información</h2>
-                    <p>
-                        No compartimos su información personal con terceros, excepto en las siguientes circunstancias:
-                    </p>
-                    <ul>
-                        <li>- Con su consentimiento, como cuando configura su perfil como "Público".</li>
-                        <li>- Para cumplir con la ley o responder a procesos legales.</li>
-                        <li>- Para proteger los derechos y la propiedad de 123MiD, nuestros agentes, clientes y otros.</li>
+                    <h3 className="text-2xl font-bold text-foreground pt-4">3) Finalidades</h3>
+                    <ul className="list-disc pl-5 space-y-2">
+                       <li>Crear y mantener tu cuenta y perfil público de emergencia que tú configuras.</li>
+                       <li>Mostrar datos críticos al escanear tu QR según permisos que definas.</li>
+                       <li>Enviar notificaciones del servicio y, en Plus, recordatorios.</li>
+                       <li>Cumplir obligaciones legales y de seguridad.</li>
                     </ul>
 
-                    <h2 className="text-2xl font-bold text-foreground">5. Seguridad de los Datos</h2>
-                    <p>
-                        Tomamos medidas razonables para proteger su información personal contra pérdida, robo, uso indebido y acceso no autorizado. Utilizamos Firebase Authentication, Firestore y Firebase Storage, que proporcionan capas de seguridad robustas para proteger sus datos.
-                    </p>
+                    <h3 className="text-2xl font-bold text-foreground pt-4">4) Bases legales</h3>
+                     <ul className="list-disc pl-5 space-y-2">
+                       <li>Autorización del titular.</li>
+                       <li>Cumplimiento de deberes legales.</li>
+                       <li>Interés legítimo para seguridad y mejora del servicio.</li>
+                   </ul>
+
+                   <h3 className="text-2xl font-bold text-foreground pt-4">5) Tu control y derechos</h3>
+                   <ul className="list-disc pl-5 space-y-2">
+                       <li>Puedes ver, editar, ocultar o borrar campos de tu perfil y eliminar tu cuenta en cualquier momento.</li>
+                       <li>Derechos: conocer, actualizar, rectificar, suprimir y revocar autorización. Solicítalos vía <a href="mailto:contacto@123mid.com" className="text-primary underline">contacto@123mid.com</a>. Respuesta en máximo 15 días hábiles.</li>
+                   </ul>
+
+                   <h3 className="text-2xl font-bold text-foreground pt-4">6) Transferencias y encargados</h3>
+                   <ul className="list-disc pl-5 space-y-2">
+                       <li>Proveedores tecnológicos que alojan y operan el servicio bajo acuerdos de confidencialidad y seguridad.</li>
+                       <li>Pagos Plus: la pasarela de pagos procesa los datos financieros.</li>
+                   </ul>
+
+                    <h3 className="text-2xl font-bold text-foreground pt-4">7) Seguridad</h3>
+                    <p>Ciframos comunicaciones y aplicamos medidas administrativas, técnicas y físicas proporcionales al riesgo. Ningún sistema es infalible.</p>
                     
-                    <p>[...]</p>
+                    <h3 className="text-2xl font-bold text-foreground pt-4">8) Retención</h3>
+                    <p>Conservamos tus datos mientras tengas cuenta activa y por tiempos necesarios para obligaciones legales o defensa de reclamaciones. Luego se anonimizan o eliminan de forma segura.</p>
+                    
+                    <h3 className="text-2xl font-bold text-foreground pt-4">9) Menores de edad</h3>
+                    <p>El servicio debe ser gestionado por madres, padres o representantes legales para perfiles de menores, con la debida autorización.</p>
+                    
+                    <h3 className="text-2xl font-bold text-foreground pt-4">10) Cambios a esta Política</h3>
+                    <p>Publicaremos actualizaciones en esta página. El uso posterior implica aceptación de la versión vigente.</p>
                 </div>
             </div>
         </div>

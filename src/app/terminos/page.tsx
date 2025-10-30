@@ -9,36 +9,49 @@ export default function TermsPage() {
     return (
         <div className="container mx-auto px-4 md:px-6 py-12 md:py-24 lg:py-32">
             <div className="max-w-3xl mx-auto">
-                <h1 className="text-4xl font-bold font-headline mb-4">Términos de Servicio</h1>
+                <h1 className="text-4xl font-bold font-headline mb-4">Términos y Condiciones</h1>
                 <div className="space-y-6 text-muted-foreground">
-                    <p>Última actualización: {new Date().toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                    <p>Fecha de versión: 23 de octubre de 2025</p>
                     
-                    <h2 className="text-2xl font-bold text-foreground">1. Aceptación de los Términos</h2>
-                    <p>
-                        Bienvenido a 123MiD. Al acceder o utilizar nuestro sitio web y nuestros servicios, usted acepta estar sujeto a estos Términos de Servicio y a nuestra Política de Privacidad. Si no está de acuerdo con alguna parte de los términos, no podrá acceder al servicio.
-                    </p>
+                    <h3 className="text-2xl font-bold text-foreground pt-4">1) Objeto</h3>
+                    <p>123MiD ofrece manillas/etiquetas con QR vinculadas a un perfil médico en línea para uso en emergencias. No es un dispositivo médico ni sustituye atención profesional.</p>
 
-                    <h2 className="text-2xl font-bold text-foreground">2. Descripción del Servicio</h2>
-                    <p>
-                        123MiD proporciona pulseras de emergencia médica y una plataforma en línea donde los usuarios pueden almacenar su información médica para que sea accesible en caso de emergencia. La precisión y la integridad de la información proporcionada son responsabilidad exclusiva del usuario.
-                    </p>
+                    <h3 className="text-2xl font-bold text-foreground pt-4">2) Cuenta y uso</h3>
+                    <ul className="list-disc pl-5 space-y-2">
+                       <li>Debes registrar información veraz y mantener la confidencialidad de tus credenciales.</li>
+                       <li>Eres responsable del contenido que publiques y de configurar qué se muestra en modo público de emergencia.</li>
+                       <li>Prohibido el uso para fines ilícitos o que vulneren derechos de terceros.</li>
+                    </ul>
 
-                    <h2 className="text-2xl font-bold text-foreground">3. Cuentas de Usuario</h2>
-                    <p>
-                        Para utilizar ciertas funciones del servicio, debe registrarse para obtener una cuenta. Usted es responsable de salvaguardar su contraseña y de cualquier actividad o acción bajo su cuenta. Usted se compromete a no divulgar su contraseña a ningún tercero.
-                    </p>
-
-                    <h2 className="text-2xl font-bold text-foreground">4. Privacidad y Datos Personales</h2>
-                    <p>
-                        Su privacidad es importante para nosotros. Nuestra Política de Privacidad explica cómo recopilamos, usamos y protegemos su información personal. Al usar nuestros servicios, usted acepta la recopilación y el uso de información de acuerdo con nuestra política de privacidad.
-                    </p>
-
-                    <h2 className="text-2xl font-bold text-foreground">5. Limitación de Responsabilidad</h2>
-                    <p>
-                        123MiD no es un proveedor de servicios médicos. El servicio se proporciona "tal cual" y no garantizamos que el servicio sea ininterrumpido, seguro o libre de errores. En ningún caso 123MiD será responsable de ningún daño indirecto, incidental, especial, consecuente o punitivo.
-                    </p>
+                    <h3 className="text-2xl font-bold text-foreground pt-4">3) Contenido y licencias</h3>
+                    <p>Tú conservas la titularidad de tus datos. Nos concedes una licencia limitada para alojarlos y mostrarlos según tu configuración a fin de prestar el servicio.</p>
                     
-                    <p>[...]</p>
+                    <h3 className="text-2xl font-bold text-foreground pt-4">4) Planes y pagos</h3>
+                    <ul className="list-disc pl-5 space-y-2">
+                       <li>El acceso básico es gratuito. El plan Plus es de pago anual e incluye funcionalidades adicionales (p. ej., alertas por escaneo, recordatorios, documentos).</li>
+                       <li>Pagos procesados por la pasarela de pagos elegida por 123MiD; la pasarela es la responsable del tratamiento de datos financieros.</li>
+                       <li>Renovaciones y cancelaciones: puedes cancelar la renovación antes del siguiente periodo; pagos ya cursados no son reembolsables salvo ley aplicable.</li>
+                    </ul>
+
+                    <h3 className="text-2xl font-bold text-foreground pt-4">5) Limitación de responsabilidad</h3>
+                    <ul className="list-disc pl-5 space-y-2">
+                       <li>123MiD no garantiza disponibilidad ininterrumpida. No somos responsables por daños indirectos o pérdida de datos por causas fuera de control razonable.</li>
+                       <li>En todo caso, la responsabilidad total frente al usuario se limita a los valores pagados por el servicio en los 12 meses previos al evento.</li>
+                    </ul>
+
+                    <h3 className="text-2xl font-bold text-foreground pt-4">6) Privacidad y protección de datos</h3>
+                    <p>Regida por la Política de Privacidad de 123MiD incluida en esta web.</p>
+                    
+                    <h3 className="text-2xl font-bold text-foreground pt-4">7) Propiedad intelectual</h3>
+                    <p>Marcas, logos, diseño del sitio y software son de 123MiD o licenciantes. No se concede licencia distinta a lo previsto en estos Términos.</p>
+                    
+                    <h3 className="text-2xl font-bold text-foreground pt-4">8) Jurisdicción</h3>
+                    <p>Estos Términos se rigen por las leyes de Colombia. Controversias ante los jueces de Bogotá D. C., salvo normas imperativas distintas.</p>
+                    
+                    <h3 className="text-2xl font-bold text-foreground pt-4">9) Cambios a los Términos</h3>
+                    <p>Podremos actualizar estos Términos publicando la nueva versión. El uso posterior implica aceptación.</p>
+                    
+                    <p>Si tienes preguntas sobre estos documentos, escríbenos a <a href="mailto:contacto@123mid.com" className="text-primary underline">contacto@123mid.com</a></p>
                 </div>
             </div>
         </div>
