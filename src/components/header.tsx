@@ -17,7 +17,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { useAuth, useUser } from "@/firebase";
 import React, { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from "@/components/ui/dialog";
-import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import { useToast } from "@/hooks/use-toast";
@@ -50,12 +49,11 @@ function RescuerAccessModal({ asChild = false }: { asChild?: boolean }) {
   const { toast } = useToast();
   
   const [isLoading, setIsLoading] = useState(false);
-  const [braceletId, setBraceletId] = useState('');
-  const [isPinModalOpen, setIsPinModalOpen] = useState(false);
   const [isIdModalOpen, setIsIdModalOpen] = useState(false);
 
   const handleIdSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsLoading(true);
     const formData = new FormData(e.currentTarget);
     const id = (formData.get("id") as string)?.trim();
 
@@ -65,20 +63,14 @@ function RescuerAccessModal({ asChild = false }: { asChild?: boolean }) {
         title: "ID Requerido",
         description: "Por favor, ingresa el ID de la pulsera.",
       });
+      setIsLoading(false);
       return;
     }
     
-    setBraceletId(id.toLowerCase());
     setIsIdModalOpen(false);
-    setIsPinModalOpen(true);
+    router.push(`/perfil/${id.toLowerCase()}`);
   };
   
-  const handlePinSubmit = (pin: string) => {
-    setIsLoading(true);
-    setIsPinModalOpen(false);
-    router.push(`/perfil/${braceletId}?pin=${pin}`);
-  };
-
   const TriggerComponent = asChild ? (
     <div className="w-full flex items-center justify-between">
       <div className="flex items-center gap-4">
@@ -94,7 +86,6 @@ function RescuerAccessModal({ asChild = false }: { asChild?: boolean }) {
   );
 
   return (
-    <>
       <Dialog open={isIdModalOpen} onOpenChange={setIsIdModalOpen}>
         <DialogTrigger asChild>
           {TriggerComponent}
@@ -123,28 +114,6 @@ function RescuerAccessModal({ asChild = false }: { asChild?: boolean }) {
           </form>
         </DialogContent>
       </Dialog>
-      
-      <Dialog open={isPinModalOpen} onOpenChange={setIsPinModalOpen}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle className="text-center font-headline text-2xl">Verificar PIN</DialogTitle>
-            <DialogDescription className="text-center">
-              Ingresa el PIN de 4 dígitos para la pulsera <span className="font-bold text-primary">{braceletId.toUpperCase()}</span>.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="flex items-center justify-center space-y-4 py-4">
-            <InputOTP maxLength={4} onComplete={handlePinSubmit}>
-              <InputOTPGroup>
-                <InputOTPSlot index={0} />
-                <InputOTPSlot index={1} />
-                <InputOTPSlot index={2} />
-                <InputOTPSlot index={3} />
-              </InputOTPGroup>
-            </InputOTP>
-          </div>
-        </DialogContent>
-      </Dialog>
-    </>
   )
 }
   

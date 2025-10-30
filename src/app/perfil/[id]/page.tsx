@@ -10,7 +10,7 @@ import { Loader2, AlertTriangle, Lock } from "lucide-react"
 import React, { useState, useEffect, Suspense, lazy } from "react"
 import { useToast } from "@/hooks/use-toast"
 import Link from "next/link"
-import { useParams, useSearchParams } from "next/navigation"
+import { useParams } from "next/navigation"
 import { Profile } from "@/lib/profiles"
 
 // Mock Data for the demo profile
@@ -33,15 +33,12 @@ const ProfileView = lazy(() => import('./ProfileView'));
 
 function PinForm({ id, onVerified }: { id: string; onVerified: (profile: Profile) => void }) {
     const { toast } = useToast();
-    const searchParams = useSearchParams();
     const [isLoading, setIsLoading] = useState(false);
-    const pinFromQuery = searchParams.get('pin');
-    const [accessDenied, setAccessDenied] = useState(false);
-    const [errorMessage, setErrorMessage] = useState("El acceso a este perfil ha sido denegado.");
+    const [errorMessage, setErrorMessage] = useState("");
 
     const checkProfile = async (pin: string) => {
         setIsLoading(true);
-        setAccessDenied(false);
+        setErrorMessage("");
         try {
             const response = await fetch('/api/verify-pin', {
                 method: 'POST',
@@ -56,7 +53,6 @@ function PinForm({ id, onVerified }: { id: string; onVerified: (profile: Profile
             if (result.success && result.profile) {
                 onVerified(result.profile);
             } else {
-                setAccessDenied(true);
                 setErrorMessage(result.message || 'Error al verificar el perfil.');
                 if(response.status !== 403 && response.status !== 404){
                      toast({ variant: "destructive", title: "Error", description: result.message || 'No se pudo verificar la pulsera.' });
@@ -64,21 +60,12 @@ function PinForm({ id, onVerified }: { id: string; onVerified: (profile: Profile
             }
 
         } catch (error: any) {
-            setAccessDenied(true);
             setErrorMessage(error.message || "Ocurrió un error inesperado.");
             toast({ variant: "destructive", title: "Error de Red", description: "No se pudo conectar con el servidor." });
         } finally {
             setIsLoading(false);
         }
     }
-
-    useEffect(() => {
-        if (pinFromQuery) {
-            checkProfile(pinFromQuery);
-        }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [pinFromQuery, id]);
-
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -87,31 +74,6 @@ function PinForm({ id, onVerified }: { id: string; onVerified: (profile: Profile
         checkProfile(pin);
     }
 
-    if (pinFromQuery && isLoading) {
-        return (
-            <div className="flex flex-col items-center justify-center min-h-[calc(100vh-10rem)] py-12 bg-muted/40 text-center px-4">
-                <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
-                <h1 className="text-2xl font-bold">Verificando acceso...</h1>
-                <p className="text-muted-foreground">Por favor, espera un momento.</p>
-            </div>
-        )
-    }
-
-    if (accessDenied && pinFromQuery) {
-         return (
-            <div className="flex flex-col items-center justify-center min-h-[calc(100vh-10rem)] py-12 bg-muted/40 text-center px-4">
-                 <AlertTriangle className="h-12 w-12 text-destructive mb-4" />
-                <h1 className="text-2xl font-bold">Acceso Denegado</h1>
-                <p className="text-muted-foreground max-w-md">{errorMessage}</p>
-                 <Button asChild className="mt-6">
-                    <Link href="/">Volver al Inicio</Link>
-                </Button>
-            </div>
-        )
-    }
-
-    // This form is shown if there is no PIN in the URL, or if there was an error
-    // and the user needs to retry.
     return (
         <div className="flex items-center justify-center min-h-[calc(100vh-10rem)] py-12 bg-muted/40 px-4">
             <Card className="mx-auto max-w-sm w-full">
@@ -122,7 +84,7 @@ function PinForm({ id, onVerified }: { id: string; onVerified: (profile: Profile
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
-                     {accessDenied && !pinFromQuery && (
+                     {errorMessage && (
                         <div className="bg-destructive/10 text-destructive text-sm rounded-md p-3 text-center mb-4">
                            {errorMessage}
                         </div>
