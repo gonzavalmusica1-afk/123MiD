@@ -70,6 +70,13 @@ function RescuerAccessModal({ asChild = false }: { asChild?: boolean }) {
     setIsIdModalOpen(false);
     router.push(`/perfil/${id.toLowerCase()}`);
   };
+
+  const handleOpenChange = (isOpen: boolean) => {
+    setIsIdModalOpen(isOpen);
+    if (!isOpen) {
+      setIsLoading(false);
+    }
+  }
   
   const TriggerComponent = asChild ? (
     <div className="w-full flex items-center justify-between">
@@ -86,7 +93,7 @@ function RescuerAccessModal({ asChild = false }: { asChild?: boolean }) {
   );
 
   return (
-      <Dialog open={isIdModalOpen} onOpenChange={setIsIdModalOpen}>
+      <Dialog open={isIdModalOpen} onOpenChange={handleOpenChange}>
         <DialogTrigger asChild>
           {TriggerComponent}
         </DialogTrigger>
