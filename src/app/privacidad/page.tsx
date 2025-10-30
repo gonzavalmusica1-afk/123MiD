@@ -21,32 +21,32 @@ export default function PrivacyPage() {
                     <h2 className="text-2xl font-bold text-foreground">2. Información que Recopilamos</h2>
                     <p>
                         Recopilamos información que usted nos proporciona directamente, como cuando crea una cuenta, completa su perfil médico o se comunica con nosotros. Esto puede incluir:
-                        <ul>
-                            <li>- Información de la cuenta: Nombre, correo electrónico, contraseña.</li>
-                            <li>- Información Médica: Tipo de sangre, alergias, condiciones médicas, contactos de emergencia, etc.</li>
-                            <li>- Información de la mascota: Si aplica, detalles sobre su mascota.</li>
-                        </ul>
                     </p>
+                    <ul>
+                        <li>- Información de la cuenta: Nombre, correo electrónico, contraseña.</li>
+                        <li>- Información Médica: Tipo de sangre, alergias, condiciones médicas, contactos de emergencia, etc.</li>
+                        <li>- Información de la mascota: Si aplica, detalles sobre su mascota.</li>
+                    </ul>
 
                     <h2 className="text-2xl font-bold text-foreground">3. Cómo Usamos la Información</h2>
                     <p>
                         Utilizamos la información que recopilamos para:
-                        <ul>
-                            <li>- Proporcionar, mantener y mejorar nuestros servicios.</li>
-                            <li>- Permitir el acceso a su perfil médico en caso de emergencia, según su configuración de privacidad.</li>
-                            <li>- Comunicarnos con usted sobre su cuenta y nuestros servicios.</li>
-                        </ul>
                     </p>
+                    <ul>
+                        <li>- Proporcionar, mantener y mejorar nuestros servicios.</li>
+                        <li>- Permitir el acceso a su perfil médico en caso de emergencia, según su configuración de privacidad.</li>
+                        <li>- Comunicarnos con usted sobre su cuenta y nuestros servicios.</li>
+                    </ul>
 
                     <h2 className="text-2xl font-bold text-foreground">4. Cómo Compartimos la Información</h2>
                     <p>
                         No compartimos su información personal con terceros, excepto en las siguientes circunstancias:
-                        <ul>
-                            <li>- Con su consentimiento, como cuando configura su perfil como "Público".</li>
-                            <li>- Para cumplir con la ley o responder a procesos legales.</li>
-                            <li>- Para proteger los derechos y la propiedad de 123MiD, nuestros agentes, clientes y otros.</li>
-                        </ul>
                     </p>
+                    <ul>
+                        <li>- Con su consentimiento, como cuando configura su perfil como "Público".</li>
+                        <li>- Para cumplir con la ley o responder a procesos legales.</li>
+                        <li>- Para proteger los derechos y la propiedad de 123MiD, nuestros agentes, clientes y otros.</li>
+                    </ul>
 
                     <h2 className="text-2xl font-bold text-foreground">5. Seguridad de los Datos</h2>
                     <p>
