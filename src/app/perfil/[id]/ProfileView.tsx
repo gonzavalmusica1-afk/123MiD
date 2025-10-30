@@ -30,6 +30,26 @@ function formatDate(dob: string) {
     }
 }
 
+const MedicalCrossIcon = (props: React.SVGProps<SVGSVGElement>) => (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="hsl(var(--primary))"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M12 1V7" />
+      <path d="M12 17V23" />
+      <path d="M1 12H7" />
+      <path d="M17 12H23" />
+    </svg>
+  );
+
 export default function ProfileView({ profile, isMockup = false }: { profile: Partial<Profile>, isMockup?: boolean }) {
     const fallbackAvatar = placeholderImages.find(p => p.id === (profile.profileType === 'pet' ? "pet-profile" : "user-profile"));
     const avatarUrl = profile.photoUrl || fallbackAvatar?.imageUrl;
@@ -49,6 +69,12 @@ export default function ProfileView({ profile, isMockup = false }: { profile: Pa
                         "p-6 text-center border-b",
                         isMockup ? "bg-transparent border-primary/10" : "bg-primary/10 border-primary/20 rounded-t-lg"
                         )}>
+                         {isMockup && (
+                            <div className="flex items-center justify-center gap-2 mb-2">
+                                <MedicalCrossIcon className="h-6 w-6" />
+                                <span className="text-lg font-semibold font-headline">123MiD</span>
+                            </div>
+                         )}
                          <div className="flex justify-center items-center mb-4">
                             <Avatar className="h-24 w-24 border-4 border-background shadow-md">
                                 <AvatarImage src={avatarUrl} alt={profile.name} data-ai-hint={avatarHint} />

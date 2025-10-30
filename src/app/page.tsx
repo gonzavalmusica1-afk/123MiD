@@ -11,7 +11,7 @@ import ProfileView from "./perfil/[id]/ProfileView";
 import type { Profile } from "@/lib/profiles";
 
 const DemoProfileData = {
-    name: "Juan Pérez (Demo)",
+    name: "Juan Pérez",
     dob: "1985-04-23",
     bloodType: "O+",
     allergies: "Penicilina, Nueces",
@@ -129,7 +129,7 @@ export default function Home() {
               <li className="flex items-start gap-4">
                 <CheckCircle className="mt-1 h-6 w-6 flex-shrink-0 text-primary" />
                 <div>
-                  <h3 className="font-bold">1. Regístrate y Activa tu Pulsera</h3>
+                  <h3 className="font-bold">1. Regístrate y Activa</h3>
                   <p className="text-muted-foreground">
                     Crea tu cuenta gratis y vincula la pulsera que ya posees usando su ID y PIN únicos.
                   </p>
@@ -138,7 +138,7 @@ export default function Home() {
               <li className="flex items-start gap-4">
                 <CheckCircle className="mt-1 h-6 w-6 flex-shrink-0 text-primary" />
                 <div>
-                  <h3 className="font-bold">2. Completa tu Perfil y Privacidad</h3>
+                  <h3 className="font-bold">2. Completa tu Perfil</h3>
                   <p className="text-muted-foreground">
                     Añade tu información médica esencial, contactos de emergencia y elige quién puede ver tus datos.
                   </p>
@@ -149,7 +149,7 @@ export default function Home() {
                 <div>
                   <h3 className="font-bold">3. ¡Listo para Emergencias!</h3>
                   <p className="text-muted-foreground">
-                    Si ocurre una emergencia, un rescatista podrá escanear el QR o ingresar el ID y PIN para acceder a tu información vital y ayudarte eficazmente.
+                    En una emergencia, un rescatista usa el ID y PIN para acceder a tu información vital y ayudarte.
                   </p>
                 </div>
               </li>
