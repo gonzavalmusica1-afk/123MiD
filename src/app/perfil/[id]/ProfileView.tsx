@@ -67,14 +67,8 @@ export default function ProfileView({ profile, isMockup = false }: { profile: Pa
                 <Card className={cn(isMockup ? "shadow-none border-none rounded-none" : "shadow-lg")}>
                     <CardHeader className={cn(
                         "p-6 text-center border-b",
-                        isMockup ? "bg-transparent border-primary/10" : "bg-primary/10 border-primary/20 rounded-t-lg"
+                        isMockup ? "bg-transparent" : "bg-primary/10 border-primary/20 rounded-t-lg"
                         )}>
-                         {isMockup && (
-                            <div className="flex items-center justify-center gap-2 mb-2">
-                                <MedicalCrossIcon className="h-6 w-6" />
-                                <span className="text-lg font-semibold font-headline">123MiD</span>
-                            </div>
-                         )}
                          <div className="flex justify-center items-center mb-4">
                             <Avatar className="h-24 w-24 border-4 border-background shadow-md">
                                 <AvatarImage src={avatarUrl} alt={profile.name} data-ai-hint={avatarHint} />
