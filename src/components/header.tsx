@@ -1,7 +1,7 @@
 
 "use client"
 
-import { LogOut, LayoutDashboard, PlusCircle, Search, Menu, LifeBuoy } from "lucide-react";
+import { LogOut, LayoutDashboard, PlusCircle, Search, Menu, LifeBuoy, ShieldAlert } from "lucide-react";
 import Link from "next/link";
 import { Button } from "./ui/button";
 import { usePathname, useRouter } from "next/navigation";
@@ -93,7 +93,7 @@ function RescuerAccessModal({ asChild = false }: { asChild?: boolean }) {
     </div>
   ) : (
     <Button variant="outline" className="font-bold shadow-sm hover:shadow-md transition-shadow border-primary/50 text-primary hover:bg-primary/5 hover:text-primary">
-      <Search className="mr-2 h-4 w-4 text-primary" />
+      <ShieldAlert className="mr-2 h-4 w-4 text-primary" />
       Acceso Rescatista
     </Button>
   );
@@ -106,7 +106,7 @@ function RescuerAccessModal({ asChild = false }: { asChild?: boolean }) {
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle className="text-2xl flex items-center gap-2 font-headline">
-              <Search className="h-6 w-6 text-primary" />
+              <ShieldAlert className="h-6 w-6 text-primary" />
               Acceso para Rescatistas
             </DialogTitle>
             <DialogDescription>
