@@ -123,51 +123,33 @@ export default function Home() {
               ¿Cómo Funciona?
             </h2>
             <p className="max-w-[600px] text-muted-foreground md:text-xl/relaxed">
-              En solo 5 pasos, tu información vital estará protegida y accesible para quien más lo necesita.
+              En solo 3 pasos, tu información vital estará protegida y accesible para quien más lo necesita.
             </p>
-            <ul className="grid gap-4">
+            <ul className="grid gap-6">
                 <li className="flex items-start gap-4">
                     <CheckCircle className="mt-1 h-6 w-6 flex-shrink-0 text-primary" />
                     <div>
-                        <h3 className="font-bold">1. Crea tu Cuenta</h3>
+                        <h3 className="font-bold">1. Regístrate y Activa tu Pulsera</h3>
                         <p className="text-muted-foreground">
-                            Regístrate gratis en nuestra plataforma para poder gestionar tus perfiles.
+                            Crea tu cuenta gratis en segundos y vincula tu pulsera usando el ID y PIN únicos.
                         </p>
                     </div>
                 </li>
                 <li className="flex items-start gap-4">
                     <CheckCircle className="mt-1 h-6 w-6 flex-shrink-0 text-primary" />
                     <div>
-                        <h3 className="font-bold">2. Activa tu Pulsera</h3>
+                        <h3 className="font-bold">2. Configura tu Perfil</h3>
                         <p className="text-muted-foreground">
-                           Usa el ID y PIN únicos que vienen con tu pulsera para vincularla a tu cuenta.
-                        </p>
-                    </div>
-                </li>
-                <li className="flex items-start gap-4">
-                    <CheckCircle className="mt-1 h-6 w-6 flex-shrink-0 text-primary" />
-                    <div>
-                        <h3 className="font-bold">3. Completa tu Perfil</h3>
-                        <p className="text-muted-foreground">
-                            Añade tu información médica, contactos de emergencia y una foto. ¡No olvides a tus mascotas!
-                        </p>
-                    </div>
-                </li>
-                <li className="flex items-start gap-4">
-                    <CheckCircle className="mt-1 h-6 w-6 flex-shrink-0 text-primary" />
-                    <div>
-                        <h3 className="font-bold">4. Elige tu Privacidad</h3>
-                        <p className="text-muted-foreground">
-                            Configura tu perfil como público para emergencias, o privado para máxima discreción.
+                           Añade tu información médica esencial, contactos de emergencia y elige tu nivel de privacidad.
                         </p>
                     </div>
                 </li>
                 <li className="flex items-start gap-4">
                     <ShieldAlert className="mt-1 h-6 w-6 flex-shrink-0 text-destructive" />
                     <div>
-                        <h3 className="font-bold">5. ¡Listo para Emergencias!</h3>
+                        <h3 className="font-bold">3. ¡Listo para Emergencias!</h3>
                         <p className="text-muted-foreground">
-                            Si ocurre una emergencia, un rescatista podrá escanear el código o ingresar el ID y PIN para acceder a tu información vital y ayudarte eficazmente.
+                            Si ocurre una emergencia, un rescatista podrá ingresar el ID y PIN para acceder a tu información vital y ayudarte eficazmente.
                         </p>
                     </div>
                 </li>
