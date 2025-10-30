@@ -17,6 +17,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { useUser, useStorage } from "@/firebase"
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage"
 import type { Profile } from "@/lib/profiles"
+import LegalStep from "./legal"
 
 export default function RegisterBraceletPage() {
     const router = useRouter();
@@ -28,7 +29,7 @@ export default function RegisterBraceletPage() {
     const [isLoading, setIsLoading] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     
-    const [step, setStep] = useState<'claim' | 'edit'>('claim');
+    const [step, setStep] = useState<'claim' | 'legal' | 'edit'>('claim');
     const [claimedProfile, setClaimedProfile] = useState<Profile | null>(null);
     const [profileType, setProfileType] = useState('person');
     const [imageFile, setImageFile] = useState<File | null>(null);
@@ -57,8 +58,7 @@ export default function RegisterBraceletPage() {
                     userId: user?.uid,
                 }
                 setClaimedProfile(newProfile);
-                setProfileType('person');
-                setStep('edit');
+                setStep('legal');
             } else {
                  if (result.code === 'ALREADY_OWNED' && result.id) {
                     toast({
@@ -76,6 +76,11 @@ export default function RegisterBraceletPage() {
             setIsLoading(false);
         }
     }
+
+    const handleLegalAccept = () => {
+        setProfileType('person');
+        setStep('edit');
+    };
     
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
@@ -150,7 +155,11 @@ export default function RegisterBraceletPage() {
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <Link href="/dashboard" className="hover:text-foreground">Panel</Link>
                         <ChevronRight className="h-4 w-4" />
-                        <span className="font-medium text-foreground">Registrar Pulsera</span>
+                        <span className="font-medium text-foreground">
+                            {step === 'claim' && 'Registrar Pulsera'}
+                            {step === 'legal' && 'Términos y Condiciones'}
+                            {step === 'edit' && `Configurar Perfil (${claimedProfile?.id})`}
+                        </span>
                     </div>
                 </div>
 
@@ -192,6 +201,9 @@ export default function RegisterBraceletPage() {
                         </CardContent>
                     </Card>
                 )}
+
+                {step === 'legal' && <LegalStep onAccept={handleLegalAccept} />}
+
 
                 {step === 'edit' && claimedProfile && (
                      <form onSubmit={handleEditSubmit}>
