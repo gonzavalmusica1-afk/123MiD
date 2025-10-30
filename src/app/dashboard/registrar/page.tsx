@@ -10,14 +10,12 @@ import Link from "next/link"
 import { useProfiles } from "@/context/ProfileContext"
 import React, { useState } from "react"
 import { useToast } from "@/hooks/use-toast"
-import { Loader2, ChevronRight, User, Dog, UploadCloud } from "lucide-react"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Textarea } from "@/components/ui/textarea"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Loader2, ChevronRight } from "lucide-react"
 import { useUser, useStorage } from "@/firebase"
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage"
 import type { Profile } from "@/lib/profiles"
 import LegalStep from "./legal"
+import ProfileForm from "@/components/ProfileForm"
 
 export default function RegisterBraceletPage() {
     const router = useRouter();
@@ -31,7 +29,7 @@ export default function RegisterBraceletPage() {
     
     const [step, setStep] = useState<'claim' | 'legal' | 'edit'>('claim');
     const [claimedProfile, setClaimedProfile] = useState<Profile | null>(null);
-    const [profileType, setProfileType] = useState('person');
+    const [profileType, setProfileType] = useState<'person' | 'pet'>('person');
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
 
@@ -206,134 +204,23 @@ export default function RegisterBraceletPage() {
 
 
                 {step === 'edit' && claimedProfile && (
-                     <form onSubmit={handleEditSubmit}>
-                         <div className="mb-6 text-center">
-                             <h1 className="text-2xl font-bold font-headline">Pulsera Verificada: Configura el Perfil</h1>
-                             <p className="text-muted-foreground">Estás configurando la pulsera <span className="font-semibold text-primary">{claimedProfile.id}</span>. Completa los datos a continuación.</p>
-                         </div>
-                        <div className="grid flex-1 items-start gap-4 md:grid-cols-1 lg:grid-cols-[2fr_1fr] md:gap-8">
-                            <div className="grid auto-rows-max items-start gap-4 md:gap-8">
-                                <Card>
-                                    <CardHeader>
-                                        <CardTitle>Información del Perfil</CardTitle>
-                                        <CardDescription>Esta información será visible en caso de emergencia si el perfil es público.</CardDescription>
-                                    </CardHeader>
-                                    <CardContent className="grid gap-6">
-                                        <div className="grid gap-3">
-                                            <Label htmlFor="name">Nombre Completo</Label>
-                                            <Input name="name" id="name" type="text" className="w-full" placeholder="Nombre de la persona o mascota" required />
-                                        </div>
-                                        
-                                        <div className="grid gap-3">
-                                            <Label>Foto de Perfil (Opcional)</Label>
-                                            <div className="flex items-center gap-4">
-                                                <Avatar className="h-20 w-20">
-                                                    <AvatarImage src={imagePreview || undefined} alt="Foto de perfil" />
-                                                    <AvatarFallback>{'AV'}</AvatarFallback>
-                                                </Avatar>
-                                                <Label htmlFor="photo-upload" className="cursor-pointer">
-                                                    <div className="flex items-center gap-2 border rounded-md px-3 py-2 text-sm hover:bg-accent">
-                                                        <UploadCloud className="h-4 w-4" />
-                                                        {isSubmitting ? 'Subiendo...' : 'Subir Foto'}
-                                                    </div>
-                                                </Label>
-                                                <Input name="photo" id="photo-upload" type="file" className="hidden" accept="image/*" onChange={handleImageChange} disabled={isSubmitting}/>
-                                            </div>
-                                        </div>
-
-                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                            <div className="grid gap-3">
-                                                <Label htmlFor="dob">{profileType === 'pet' ? 'Fecha de Nacimiento / Adopción' : 'Fecha de Nacimiento'}</Label>
-                                                <Input name="dob" id="dob" type="date" />
-                                            </div>
-                                            <div className="grid gap-3">
-                                                <Label htmlFor="blood-type">{profileType === 'pet' ? 'Especie y Raza' : 'Tipo de Sangre'}</Label>
-                                                <Input name="blood-type" id="blood-type" type="text" placeholder={profileType === 'pet' ? 'Ej: Perro, Golden Retriever' : 'Ej: O+'} />
-                                            </div>
-                                        </div>
-
-                                        <div className="grid gap-3">
-                                            <Label htmlFor="allergies">Alergias</Label>
-                                            <Textarea name="allergies" id="allergies" placeholder="Ej: Penicilina, Nueces, Polen..." />
-                                        </div>
-
-                                        <div className="grid gap-3">
-                                            <Label htmlFor="conditions">Condiciones Médicas {profileType === 'pet' && 'o Comportamiento'}</Label>
-                                            <Textarea name="conditions" id="conditions" placeholder="Ej: Asma, Diabetes, Ansiedad por separación..." />
-                                        </div>
-
-                                        <div className="grid gap-3">
-                                            <Label>Contacto de Emergencia {profileType === 'pet' && '/ Veterinario'}</Label>
-                                            <div className="grid gap-4">
-                                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                                                    <Input name="contact-name-1" type="text" placeholder="Nombre del contacto" />
-                                                    <Input name="contact-relation-1" type="text" placeholder="Relación" />
-                                                    <Input name="contact-phone-1" type="tel" placeholder="Teléfono" />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </CardContent>
-                                </Card>
-                            </div>
-
-                            <div className="grid auto-rows-max items-start gap-4 md:gap-8">
-                                <Card>
-                                    <CardHeader>
-                                        <CardTitle>Configuración</CardTitle>
-                                    </CardHeader>
-                                    <CardContent className="grid gap-6">
-                                        <div className="grid gap-3">
-                                            <Label>Tipo de Perfil</Label>
-                                            <RadioGroup name="profileType" value={profileType} onValueChange={setProfileType} className="flex gap-4">
-                                                <div aria-label="Persona" className="flex flex-1 items-center justify-center gap-2 border rounded-md p-3 has-[[data-state=checked]]:border-primary has-[[data-state=checked]]:bg-accent cursor-pointer">
-                                                    <RadioGroupItem value="person" id="person" />
-                                                    <Label htmlFor="person" className="cursor-pointer flex items-center gap-2">
-                                                        <User className="h-5 w-5" />
-                                                        Persona
-                                                    </Label>
-                                                </div>
-                                                <div aria-label="Mascota" className="flex flex-1 items-center justify-center gap-2 border rounded-md p-3 has-[[data-state=checked]]:border-primary has-[[data-state=checked]]:bg-accent cursor-pointer">
-                                                    <RadioGroupItem value="pet" id="pet" />
-                                                    <Label htmlFor="pet" className="cursor-pointer flex items-center gap-2">
-                                                        <Dog className="h-5 w-5" />
-                                                        Mascota
-                                                    </Label>
-                                                </div>
-                                            </RadioGroup>
-                                        </div>
-                                        <div className="grid gap-3">
-                                            <Label>Privacidad del Perfil</Label>
-                                            <RadioGroup name="privacy" defaultValue={"public"} className="flex flex-col gap-2">
-                                                 <div className="flex items-center gap-2">
-                                                    <RadioGroupItem value="public" id="public" />
-                                                    <Label htmlFor="public" className="text-sm font-normal cursor-pointer">
-                                                        Público (Recomendado)
-                                                    </Label>
-                                                </div>
-                                                <p className="text-xs text-muted-foreground ml-6">Cualquier persona con el ID y PIN puede ver la información.</p>
-
-                                                <div className="flex items-center gap-2 mt-2">
-                                                    <RadioGroupItem value="private" id="private" />
-                                                    <Label htmlFor="private" className="text-sm font-normal cursor-pointer">
-                                                        Privado
-                                                    </Label>
-                                                </div>
-                                                <p className="text-xs text-muted-foreground ml-6">Solo tú puedes ver y gestionar la información del perfil.</p>
-                                            </RadioGroup>
-                                        </div>
-                                        <div className="grid gap-2">
-                                            <Button size="lg" className="w-full" type="submit" disabled={isSaving}>
-                                                {isSaving ? <Loader2 className="animate-spin" /> : "Guardar y Finalizar"}
-                                            </Button>
-                                            <Button variant="outline" size="lg" asChild type="button">
-                                               <Link href="/dashboard">Cancelar</Link>
-                                            </Button>
-                                        </div>
-                                    </CardContent>
-                                </Card>
-                            </div>
+                    <>
+                        <div className="mb-6 text-center">
+                            <h1 className="text-2xl font-bold font-headline">Pulsera Verificada: Configura el Perfil</h1>
+                            <p className="text-muted-foreground">Estás configurando la pulsera <span className="font-semibold text-primary">{claimedProfile.id}</span>. Completa los datos a continuación.</p>
                         </div>
-                    </form>
+                        <ProfileForm
+                            profile={claimedProfile}
+                            isSubmitting={isSubmitting}
+                            imagePreview={imagePreview}
+                            imageFile={imageFile}
+                            profileType={profileType}
+                            onImageChange={handleImageChange}
+                            onProfileTypeChange={setProfileType}
+                            onSubmit={handleEditSubmit}
+                            isEditMode={false}
+                        />
+                    </>
                 )}
 
             </div>
