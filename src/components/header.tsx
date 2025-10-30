@@ -67,13 +67,14 @@ function RescuerAccessModal({ asChild = false }: { asChild?: boolean }) {
       return;
     }
     
-    setIsIdModalOpen(false);
     router.push(`/perfil/${id.toLowerCase()}`);
+    // The modal will close automatically on navigation
   };
 
   const handleOpenChange = (isOpen: boolean) => {
     setIsIdModalOpen(isOpen);
     if (!isOpen) {
+      // Reset state when the modal closes
       setIsLoading(false);
     }
   }
