@@ -1,6 +1,8 @@
 
 "use client"
 
+import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -9,37 +11,106 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { UploadCloud, User, Dog, Trash2, Loader2 } from "lucide-react";
-import { Profile } from "@/lib/profiles";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "./ui/alert-dialog";
-import React from "react";
-import Link from "next/link";
+import { useProfiles } from "@/context/ProfileContext";
+import { useUser, useStorage } from "@/firebase";
+import { useToast } from "@/hooks/use-toast";
+import { uploadProfilePicture } from "@/lib/storageUtils";
+import { Profile } from "@/lib/profiles";
 
 interface ProfileFormProps {
-    profile?: Partial<Profile>;
-    isSubmitting: boolean;
-    imagePreview: string | null;
-    profileType: 'person' | 'pet';
-    onImageChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    onProfileTypeChange: (type: 'person' | 'pet') => void;
-    onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+    profile: Partial<Profile>;
+    onSave: () => void;
     onDelete?: () => void;
     isEditMode: boolean;
 }
 
 export default function ProfileForm({
     profile,
-    isSubmitting,
-    imagePreview,
-    profileType,
-    onImageChange,
-    onProfileTypeChange,
-    onSubmit,
+    onSave,
     onDelete,
     isEditMode
 }: ProfileFormProps) {
+    const { updateProfile } = useProfiles();
+    const { user } = useUser();
+    const storage = useStorage();
+    const { toast } = useToast();
+
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [profileType, setProfileType] = useState<'person' | 'pet'>(profile?.profileType || 'person');
+    const [imageFile, setImageFile] = useState<File | null>(null);
+    const [imagePreview, setImagePreview] = useState<string | null>(profile?.photoUrl || null);
+
+    useEffect(() => {
+        // Update local state if the profile prop changes
+        setProfileType(profile?.profileType || 'person');
+        setImagePreview(profile?.photoUrl || null);
+    }, [profile]);
+
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            const file = e.target.files[0];
+            if (file.size > 5 * 1024 * 1024) { // 5MB limit
+                toast({ variant: "destructive", title: "Imagen demasiado grande", description: "La imagen no puede pesar más de 5MB." });
+                return;
+            }
+            setImageFile(file);
+            setImagePreview(URL.createObjectURL(file));
+        }
+    };
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        if (!user || !storage || !profile.id) return;
+
+        setIsSubmitting(true);
+        const formData = new FormData(e.currentTarget);
+        const data = Object.fromEntries(formData.entries());
+        
+        let photoUrl = profile.photoUrl || '';
+
+        try {
+            if (imageFile) {
+                photoUrl = await uploadProfilePicture(storage, user, profile.id, imageFile, profile.photoUrl);
+            }
+
+            const updatedData = {
+                name: data.name as string,
+                profileType: data.profileType as 'person' | 'pet',
+                type: data.profileType as 'person' | 'pet',
+                status: "Público",
+                photoUrl: photoUrl || null,
+                dob: data.dob as string,
+                bloodType: data['blood-type'] as string,
+                allergies: data.allergies as string,
+                conditions: data.conditions as string,
+                privacy: data.privacy as 'public' | 'private',
+                contacts: [{
+                    name: data['contact-name-1'] as string,
+                    relation: data['contact-relation-1'] as string,
+                    phone: data['contact-phone-1'] as string
+                }].filter(c => c.name || c.phone) // Filter out empty contacts
+            };
+
+            await updateProfile(profile.id, updatedData);
+            
+            toast({ 
+                title: isEditMode ? "Perfil Actualizado" : "Perfil Configurado", 
+                description: isEditMode ? "Tus cambios han sido guardados." : "Tu pulsera está lista y ha sido añadida a tu panel." 
+            });
+
+            onSave();
+
+        } catch (error: any) {
+            toast({ variant: "destructive", title: "Error al Guardar", description: error.message || "No se pudo guardar el perfil." });
+        } finally {
+            setIsSubmitting(false);
+        }
+    }
+
 
     return (
-        <form onSubmit={onSubmit}>
+        <form onSubmit={handleSubmit}>
             <div className="grid flex-1 items-start gap-4 md:grid-cols-1 lg:grid-cols-[2fr_1fr] md:gap-8">
                 <div className="grid auto-rows-max items-start gap-4 md:gap-8">
                     <Card>
@@ -66,7 +137,7 @@ export default function ProfileForm({
                                             {isSubmitting ? 'Subiendo...' : 'Cambiar Foto'}
                                         </div>
                                     </Label>
-                                    <Input name="photo" id="photo-upload" type="file" className="hidden" accept="image/*" onChange={onImageChange} disabled={isSubmitting}/>
+                                    <Input name="photo" id="photo-upload" type="file" className="hidden" accept="image/*" onChange={handleImageChange} disabled={isSubmitting}/>
                                 </div>
                             </div>
 
@@ -113,7 +184,7 @@ export default function ProfileForm({
                         <CardContent className="grid gap-6">
                             <div className="grid gap-3">
                                 <Label>Tipo de Perfil</Label>
-                                <RadioGroup name="profileType" value={profileType} onValueChange={(value) => onProfileTypeChange(value as 'person' | 'pet')} className="flex gap-4">
+                                <RadioGroup name="profileType" value={profileType} onValueChange={(value) => setProfileType(value as 'person' | 'pet')} className="flex gap-4">
                                     <div aria-label="Persona" className="flex flex-1 items-center justify-center gap-2 border rounded-md p-3 has-[[data-state=checked]]:border-primary has-[[data-state=checked]]:bg-accent cursor-pointer">
                                         <RadioGroupItem value="person" id="person" />
                                         <Label htmlFor="person" className="cursor-pointer flex items-center gap-2">

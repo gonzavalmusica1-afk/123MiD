@@ -11,28 +11,21 @@ import { useProfiles } from "@/context/ProfileContext"
 import React, { useState } from "react"
 import { useToast } from "@/hooks/use-toast"
 import { Loader2, ChevronRight } from "lucide-react"
-import { useUser, useStorage } from "@/firebase"
+import { useUser } from "@/firebase"
 import type { Profile } from "@/lib/profiles"
 import LegalStep from "./legal"
 import ProfileForm from "@/components/ProfileForm"
-import { uploadProfilePicture } from "@/lib/storageUtils"
 
 export default function RegisterBraceletPage() {
     const router = useRouter();
-    const { claimBracelet, updateProfile } = useProfiles();
+    const { claimBracelet } = useProfiles();
     const { user } = useUser();
-    const storage = useStorage();
     const { toast } = useToast();
 
     const [isLoading, setIsLoading] = useState(false);
-    const [isSubmitting, setIsSubmitting] = useState(false);
     
     const [step, setStep] = useState<'claim' | 'legal' | 'edit'>('claim');
     const [claimedProfile, setClaimedProfile] = useState<Profile | null>(null);
-    const [profileType, setProfileType] = useState<'person' | 'pet'>('person');
-    const [imageFile, setImageFile] = useState<File | null>(null);
-    const [imagePreview, setImagePreview] = useState<string | null>(null);
-
 
     const handleClaimSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -76,68 +69,8 @@ export default function RegisterBraceletPage() {
     }
 
     const handleLegalAccept = () => {
-        setProfileType('person');
         setStep('edit');
     };
-    
-    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files[0]) {
-            const file = e.target.files[0];
-            if (file.size > 5 * 1024 * 1024) { // 5MB limit
-                toast({ variant: "destructive", title: "Imagen demasiado grande", description: "La imagen no puede pesar más de 5MB." });
-                return;
-            }
-            setImageFile(file);
-            setImagePreview(URL.createObjectURL(file));
-        }
-    };
-
-
-    const handleEditSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        if (!claimedProfile || !user || !storage) return;
-        
-        setIsSubmitting(true);
-        
-        const formData = new FormData(e.currentTarget);
-        const data = Object.fromEntries(formData.entries());
-        let photoUrl = '';
-
-        try {
-            if (imageFile) {
-                photoUrl = await uploadProfilePicture(storage, user, claimedProfile.id, imageFile);
-            }
-
-            const updatedData = {
-                name: data.name as string,
-                profileType: data.profileType as 'person' | 'pet',
-                type: data.profileType as 'person' | 'pet',
-                status: "Público",
-                photoUrl: photoUrl || null,
-                dob: data.dob as string,
-                bloodType: data['blood-type'] as string,
-                allergies: data.allergies as string,
-                conditions: data.conditions as string,
-                privacy: data.privacy as 'public' | 'private',
-                contacts: [{
-                    name: data['contact-name-1'] as string,
-                    relation: data['contact-relation-1'] as string,
-                    phone: data['contact-phone-1'] as string
-                }].filter(c => c.name || c.phone)
-            };
-
-            await updateProfile(claimedProfile.id, updatedData);
-            toast({ title: "Perfil Configurado", description: "Tu pulsera está lista y ha sido añadida a tu panel." });
-            router.push('/dashboard');
-        } catch (error: any) {
-            toast({ variant: "destructive", title: "Error al guardar", description: error.message || "No se pudo guardar el perfil." });
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
-
-    const isSaving = isLoading || isSubmitting;
-
 
     return (
         <div className="flex flex-col items-center justify-start min-h-[calc(100vh-10rem)] py-8 bg-muted/40 px-4">
@@ -195,7 +128,6 @@ export default function RegisterBraceletPage() {
 
                 {step === 'legal' && <LegalStep onAccept={handleLegalAccept} />}
 
-
                 {step === 'edit' && claimedProfile && (
                     <>
                         <div className="mb-6 text-center">
@@ -204,17 +136,11 @@ export default function RegisterBraceletPage() {
                         </div>
                         <ProfileForm
                             profile={claimedProfile}
-                            isSubmitting={isSubmitting}
-                            imagePreview={imagePreview}
-                            profileType={profileType}
-                            onImageChange={handleImageChange}
-                            onProfileTypeChange={setProfileType}
-                            onSubmit={handleEditSubmit}
+                            onSave={() => router.push('/dashboard')}
                             isEditMode={false}
                         />
                     </>
                 )}
-
             </div>
         </div>
     )

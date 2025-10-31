@@ -6,50 +6,19 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { useParams, useRouter } from 'next/navigation';
-import { useState, useEffect } from "react";
 import { useProfiles } from "@/context/ProfileContext";
 import { useToast } from "@/hooks/use-toast";
-import { useUser, useStorage } from "@/firebase";
 import ProfileForm from "@/components/ProfileForm";
-import { uploadProfilePicture } from "@/lib/storageUtils";
 
 export default function EditProfilePage() {
     const router = useRouter();
     const params = useParams<{ id: string }>();
-    const { getProfileById, updateProfile, deleteProfile } = useProfiles();
-    const { user } = useUser();
-    const storage = useStorage();
+    const { getProfileById, deleteProfile } = useProfiles();
     const { toast } = useToast();
     
     const id = params.id;
     const profile = getProfileById(id);
 
-    const [profileType, setProfileType] = useState<'person' | 'pet'>('person');
-    const [imageFile, setImageFile] = useState<File | null>(null);
-    const [imagePreview, setImagePreview] = useState<string | null>(null);
-    const [isSubmitting, setIsSubmitting] = useState(false);
-
-    useEffect(() => {
-        if (profile) {
-            setProfileType(profile.profileType || 'person');
-            if (profile.photoUrl) {
-                setImagePreview(profile.photoUrl);
-            }
-        }
-    }, [profile]);
-
-    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files[0]) {
-            const file = e.target.files[0];
-            if (file.size > 5 * 1024 * 1024) { // 5MB limit
-                toast({ variant: "destructive", title: "Imagen demasiado grande", description: "La imagen no puede pesar más de 5MB." });
-                return;
-            }
-            setImageFile(file);
-            setImagePreview(URL.createObjectURL(file));
-        }
-    };
-    
     if (!profile) {
         return (
             <div className="flex min-h-[calc(100vh-10rem)] w-full flex-col items-center justify-center bg-muted/40 p-4">
@@ -68,51 +37,10 @@ export default function EditProfilePage() {
         );
     }
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        if (!user || !storage) return;
-
-        setIsSubmitting(true);
-        const formData = new FormData(e.currentTarget);
-        const data = Object.fromEntries(formData.entries());
-        
-        let photoUrl = profile.photoUrl || '';
-
-        try {
-            if (imageFile) {
-                photoUrl = await uploadProfilePicture(storage, user, id, imageFile, profile.photoUrl);
-            }
-
-            const updatedData = {
-                name: data.name as string,
-                profileType: data.profileType as 'person' | 'pet',
-                photoUrl: photoUrl,
-                dob: data.dob as string,
-                bloodType: data['blood-type'] as string,
-                allergies: data.allergies as string,
-                conditions: data.conditions as string,
-                privacy: data.privacy as 'public' | 'private',
-                contacts: [{
-                    name: data['contact-name-1'] as string,
-                    relation: data['contact-relation-1'] as string,
-                    phone: data['contact-phone-1'] as string
-                }].filter(c => c.name || c.phone) // Filter out empty contacts
-            };
-
-            await updateProfile(id, updatedData);
-            toast({ title: "Perfil Actualizado", description: "Tus cambios han sido guardados." });
-            router.push('/dashboard');
-
-        } catch (error: any) {
-            toast({ variant: "destructive", title: "Error al Guardar", description: error.message || "No se pudo guardar el perfil." });
-        } finally {
-            setIsSubmitting(false);
-        }
-    }
-
     const handleDelete = async () => {
-        await deleteProfile(id);
-        toast({ title: "Perfil Desvinculado", description: `La pulsera ${id.toUpperCase()} ha sido desvinculada de tu cuenta.` });
+        if (!profile) return;
+        await deleteProfile(profile.id);
+        toast({ title: "Perfil Desvinculado", description: `La pulsera ${profile.id.toUpperCase()} ha sido desvinculada de tu cuenta.` });
         router.push('/dashboard');
     }
 
@@ -129,13 +57,8 @@ export default function EditProfilePage() {
                 <div className="p-4 sm:px-6 sm:py-0">
                     <ProfileForm 
                         profile={profile}
-                        isSubmitting={isSubmitting}
-                        imagePreview={imagePreview}
-                        profileType={profileType}
-                        onImageChange={handleImageChange}
-                        onProfileTypeChange={setProfileType}
-                        onSubmit={handleSubmit}
                         onDelete={handleDelete}
+                        onSave={() => router.push('/dashboard')}
                         isEditMode={true}
                     />
                 </div>
