@@ -80,7 +80,7 @@ function PinForm({ id, onVerified }: { id: string; onVerified: (profile: Profile
                 <CardHeader className="text-center">
                     <CardTitle className="text-2xl font-headline flex items-center justify-center gap-2"><Lock className="h-6 w-6"/> Acceso al Perfil</CardTitle>
                     <CardDescription>
-                        Para ver el perfil <span className="font-bold">{id.toUpperCase()}</span>, ingresa el PIN de 4 dígitos.
+                        Ingresa el PIN de 4 dígitos para acceder al perfil de emergencia.
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
