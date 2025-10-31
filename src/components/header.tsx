@@ -21,7 +21,7 @@ import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { AuthNavButtons } from "./AuthNavButtons";
 
@@ -51,7 +51,7 @@ function RescuerAccessModal({ asChild = false }: { asChild?: boolean }) {
   const { toast } = useToast();
 
   const [isLoading, setIsLoading] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isIdModalOpen, setIsIdModalOpen] = useState(false);
 
   const handleIdSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -70,7 +70,7 @@ function RescuerAccessModal({ asChild = false }: { asChild?: boolean }) {
       }
 
       router.push(`/perfil/${id.toLowerCase()}`);
-      setIsModalOpen(false);
+      setIsIdModalOpen(false); // Cierra el modal
     } catch {
       toast({
         variant: "destructive",
@@ -83,8 +83,10 @@ function RescuerAccessModal({ asChild = false }: { asChild?: boolean }) {
   };
 
   const handleOpenChange = (isOpen: boolean) => {
-    setIsModalOpen(isOpen);
-    if (!isOpen) setIsLoading(false);
+    setIsIdModalOpen(isOpen);
+    if (!isOpen) {
+      setIsLoading(false);
+    }
   };
   
   const TriggerComponent = asChild ? (
@@ -102,11 +104,11 @@ function RescuerAccessModal({ asChild = false }: { asChild?: boolean }) {
   );
 
   return (
-      <Dialog open={isModalOpen} onOpenChange={handleOpenChange}>
+      <Dialog open={isIdModalOpen} onOpenChange={handleOpenChange}>
         <DialogTrigger asChild>
           {TriggerComponent}
         </DialogTrigger>
-        {isModalOpen && (
+        {isIdModalOpen && (
           <DialogContent className="sm:max-w-md">
             <DialogHeader>
               <DialogTitle className="text-2xl flex items-center gap-2 font-headline">
@@ -201,6 +203,9 @@ export function Header() {
                         </Button>
                     </SheetTrigger>
                     <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+                        <SheetHeader>
+                          <SheetTitle className="sr-only">Menú de Navegación</SheetTitle>
+                        </SheetHeader>
                         <nav className="flex flex-col gap-4 pt-10">
                             <AuthNavButtons isMobile={true} />
                         </nav>
