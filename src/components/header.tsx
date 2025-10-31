@@ -1,7 +1,7 @@
 
 "use client"
 
-import { LogOut, LayoutDashboard, PlusCircle, Search, Menu, LifeBuoy, ShieldAlert } from "lucide-react";
+import { LogOut, LayoutDashboard, Menu, LifeBuoy, ShieldAlert } from "lucide-react";
 import Link from "next/link";
 import { Button } from "./ui/button";
 import { usePathname, useRouter } from "next/navigation";
@@ -21,8 +21,10 @@ import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
-import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { AuthNavButtons } from "./AuthNavButtons";
+
 
 const MedicalCrossIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg
@@ -132,32 +134,15 @@ function RescuerAccessModal({ asChild = false }: { asChild?: boolean }) {
   
 
 export function Header() {
-  const pathname = usePathname();
   const router = useRouter();
   const auth = useAuth();
   const { user, isUserLoading } = useUser();
-  const isDashboard = pathname.startsWith('/dashboard');
   const isMobile = useIsMobile();
 
   const handleLogout = () => {
     auth.signOut();
     router.push('/');
   }
-  
-  const guestLinks = (
-      <>
-        <SheetClose asChild>
-          <Button variant="ghost" asChild className="w-full justify-start text-base py-6">
-            <Link href="/login">Iniciar Sesión</Link>
-          </Button>
-        </SheetClose>
-        <SheetClose asChild>
-          <Button asChild className="w-full justify-start text-base py-6">
-            <Link href="/signup">Registrarse</Link>
-          </Button>
-        </SheetClose>
-      </>
-    );
 
   return (
     <header className="px-4 lg:px-6 h-16 flex items-center border-b bg-background shadow-sm">
@@ -214,19 +199,12 @@ export function Header() {
                     </SheetTrigger>
                     <SheetContent side="right" className="w-[300px] sm:w-[400px]">
                         <nav className="flex flex-col gap-4 pt-10">
-                            {guestLinks}
+                            <AuthNavButtons isMobile={true} />
                         </nav>
                     </SheetContent>
                 </Sheet>
             ) : (
-              <>
-                <Button variant="ghost" asChild>
-                    <Link href="/login">Iniciar Sesión</Link>
-                </Button>
-                <Button asChild>
-                    <Link href="/signup">Registrarse</Link>
-                </Button>
-              </>
+                <AuthNavButtons />
             )}
           </div>
         )}
