@@ -16,7 +16,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { useAuth, useUser } from "@/firebase";
 import React, { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger, DialogClose } from "@/components/ui/dialog";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import { useToast } from "@/hooks/use-toast";
@@ -51,7 +51,7 @@ function RescuerAccessModal({ asChild = false }: { asChild?: boolean }) {
   const { toast } = useToast();
   
   const [isLoading, setIsLoading] = useState(false);
-  const [isIdModalOpen, setIsIdModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleIdSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -70,21 +70,13 @@ function RescuerAccessModal({ asChild = false }: { asChild?: boolean }) {
         }
         
         router.push(`/perfil/${id.toLowerCase()}`);
-        setIsIdModalOpen(false); // Close modal on successful navigation start
+        setIsModalOpen(false); // Close modal on successful navigation start
     } catch (error) {
         toast({ variant: "destructive", title: "Error", description: "Ocurrió un error inesperado."});
     } finally {
         setIsLoading(false);
     }
   };
-
-  const handleOpenChange = (isOpen: boolean) => {
-    setIsIdModalOpen(isOpen);
-    if (!isOpen) {
-      // Reset state when the modal closes, ensures clean state for next open
-      setIsLoading(false);
-    }
-  }
   
   const TriggerComponent = asChild ? (
     <div className="w-full flex items-center justify-between">
@@ -101,7 +93,7 @@ function RescuerAccessModal({ asChild = false }: { asChild?: boolean }) {
   );
 
   return (
-      <Dialog open={isIdModalOpen} onOpenChange={handleOpenChange}>
+      <Dialog onOpenChange={setIsModalOpen} open={isModalOpen}>
         <DialogTrigger asChild>
           {TriggerComponent}
         </DialogTrigger>
