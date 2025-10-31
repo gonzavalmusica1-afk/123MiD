@@ -78,12 +78,10 @@ export default function ProfileView({ profile, isMockup = false }: { profile: Pa
                         </div>
                         <CardTitle className="text-3xl font-bold font-headline text-primary-foreground bg-primary rounded-lg py-1">{profile.name}</CardTitle>
                         
-                        {!isMockup && (
-                            <div className="inline-flex items-center justify-center gap-2 mt-3 mx-auto border border-yellow-500/50 text-yellow-700 dark:text-yellow-400 font-semibold px-3 py-1.5 rounded-md text-sm bg-yellow-400/10">
-                                <UserCheck className="h-5 w-5" />
-                                <span>ID Verificado</span>
-                            </div>
-                        )}
+                        <div className="inline-flex items-center justify-center gap-2 mt-3 mx-auto border border-yellow-500/50 text-yellow-700 dark:text-yellow-400 font-semibold px-3 py-1.5 rounded-md text-sm bg-yellow-400/10">
+                            <UserCheck className="h-5 w-5" />
+                            <span>ID Verificado</span>
+                        </div>
 
                         {formattedDob && (
                             <div className="pt-2">
