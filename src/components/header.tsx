@@ -49,7 +49,7 @@ const MedicalCrossIcon = (props: React.SVGProps<SVGSVGElement>) => (
 function RescuerAccessModal({ asChild = false }: { asChild?: boolean }) {
   const router = useRouter();
   const { toast } = useToast();
-  
+
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -57,25 +57,34 @@ function RescuerAccessModal({ asChild = false }: { asChild?: boolean }) {
     e.preventDefault();
     setIsLoading(true);
     try {
-        const formData = new FormData(e.currentTarget);
-        const id = (formData.get("id") as string)?.trim();
+      const formData = new FormData(e.currentTarget);
+      const id = (formData.get("id") as string)?.trim();
 
-        if (!id) {
-            toast({
-                variant: "destructive",
-                title: "ID Requerido",
-                description: "Por favor, ingresa el ID de la pulsera.",
-            });
-            return;
-        }
-        
-        router.push(`/perfil/${id.toLowerCase()}`);
-        setIsModalOpen(false); // Close modal on successful navigation start
-    } catch (error) {
-        toast({ variant: "destructive", title: "Error", description: "Ocurrió un error inesperado."});
+      if (!id) {
+        toast({
+          variant: "destructive",
+          title: "ID Requerido",
+          description: "Por favor, ingresa el ID de la pulsera.",
+        });
+        return;
+      }
+
+      router.push(`/perfil/${id.toLowerCase()}`);
+      setIsModalOpen(false);
+    } catch {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Ocurrió un error inesperado.",
+      });
     } finally {
-        setIsLoading(false);
+      setIsLoading(false);
     }
+  };
+
+  const handleOpenChange = (isOpen: boolean) => {
+    setIsModalOpen(isOpen);
+    if (!isOpen) setIsLoading(false);
   };
   
   const TriggerComponent = asChild ? (
@@ -93,33 +102,35 @@ function RescuerAccessModal({ asChild = false }: { asChild?: boolean }) {
   );
 
   return (
-      <Dialog onOpenChange={setIsModalOpen} open={isModalOpen}>
+      <Dialog open={isModalOpen} onOpenChange={handleOpenChange}>
         <DialogTrigger asChild>
           {TriggerComponent}
         </DialogTrigger>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle className="text-2xl flex items-center gap-2 font-headline">
-              <ShieldAlert className="h-6 w-6 text-primary" />
-              Acceso para Rescatistas
-            </DialogTitle>
-            <DialogDescription>
-              Ingresa el ID de la pulsera para acceder al perfil de emergencia.
-            </DialogDescription>
-          </DialogHeader>
-          <form
-            onSubmit={handleIdSubmit}
-            className="flex flex-col sm:flex-row items-stretch sm:items-end gap-2 pt-4"
-          >
-            <div className="grid gap-1.5 flex-grow w-full">
-              <Label htmlFor="rescuer-id-modal">ID de la Pulsera</Label>
-              <Input id="rescuer-id-modal" name="id" type="text" placeholder="AV-XXXXX" disabled={isLoading} autoFocus />
-            </div>
-            <Button type="submit" className="w-full sm:w-auto" disabled={isLoading}>
-               {isLoading ? <Loader2 className="animate-spin" /> : "Buscar"}
-            </Button>
-          </form>
-        </DialogContent>
+        {isModalOpen && (
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle className="text-2xl flex items-center gap-2 font-headline">
+                <ShieldAlert className="h-6 w-6 text-primary" />
+                Acceso para Rescatistas
+              </DialogTitle>
+              <DialogDescription>
+                Ingresa el ID de la pulsera para acceder al perfil de emergencia.
+              </DialogDescription>
+            </DialogHeader>
+            <form
+              onSubmit={handleIdSubmit}
+              className="flex flex-col sm:flex-row items-stretch sm:items-end gap-2 pt-4"
+            >
+              <div className="grid gap-1.5 flex-grow w-full">
+                <Label htmlFor="rescuer-id-modal">ID de la Pulsera</Label>
+                <Input id="rescuer-id-modal" name="id" type="text" placeholder="AV-XXXXX" disabled={isLoading} autoFocus />
+              </div>
+              <Button type="submit" className="w-full sm:w-auto" disabled={isLoading}>
+                 {isLoading ? <Loader2 className="animate-spin" /> : "Buscar"}
+              </Button>
+            </form>
+          </DialogContent>
+        )}
       </Dialog>
   )
 }
