@@ -1,3 +1,4 @@
+
 'use client';
 import { doc, getDoc, Timestamp, updateDoc } from "firebase/firestore";
 import { Firestore } from "firebase/firestore";
@@ -48,6 +49,7 @@ export async function claimBracelet(
       status: "Sin configurar",
       type: "unconfigured",
       privacy: "public",
+      pin: pin // Clave: pasar el PIN para la validación de la regla de seguridad.
     });
 
     return { success: true, message: "Pulsera reclamada con éxito.", id: braceletId.toUpperCase() };
