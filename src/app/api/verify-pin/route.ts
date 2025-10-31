@@ -27,6 +27,14 @@ export async function POST(request: Request) {
 
     const data = snap.data();
     
+    // NEW: Check if the bracelet is claimed/configured.
+    if (!data.claimed) {
+        return NextResponse.json(
+            { success: false, message: "Esta pulsera no está activa o no ha sido configurada." },
+            { status: 403 }
+        );
+    }
+    
     if (data.privacy !== "public") {
       return NextResponse.json(
           { success: false, message: "Este perfil no está disponible públicamente." },
