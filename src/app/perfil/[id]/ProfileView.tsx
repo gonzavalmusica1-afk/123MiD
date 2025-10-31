@@ -2,7 +2,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { placeholderImages } from "@/lib/placeholder-images"
-import { ShieldAlert, Heart, Phone } from "lucide-react"
+import { ShieldAlert, Heart, Phone, ShieldCheck } from "lucide-react"
 import { Profile } from "@/lib/profiles"
 import { cn } from "@/lib/utils"
 import { differenceInYears, parseISO } from "date-fns"
@@ -76,6 +76,14 @@ export default function ProfileView({ profile, isMockup = false }: { profile: Pa
                             </Avatar>
                         </div>
                         <CardTitle className="text-3xl font-bold font-headline text-primary-foreground bg-primary rounded-lg py-1">{profile.name}</CardTitle>
+                        
+                        {!isMockup && (
+                            <div className="flex items-center justify-center gap-2 mt-3 bg-green-100 text-green-800 font-semibold px-3 py-1.5 rounded-full text-sm border border-green-200">
+                                <ShieldCheck className="h-5 w-5" />
+                                <span>ID Verificado</span>
+                            </div>
+                        )}
+
                         {formattedDob && (
                             <div className="pt-2">
                                 <p className="text-lg text-foreground/80">{formattedDob}</p>
