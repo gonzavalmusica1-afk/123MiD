@@ -18,7 +18,6 @@ interface ProfileFormProps {
     profile?: Partial<Profile>;
     isSubmitting: boolean;
     imagePreview: string | null;
-    imageFile: File | null;
     profileType: 'person' | 'pet';
     onImageChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     onProfileTypeChange: (type: 'person' | 'pet') => void;

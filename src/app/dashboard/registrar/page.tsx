@@ -12,10 +12,10 @@ import React, { useState } from "react"
 import { useToast } from "@/hooks/use-toast"
 import { Loader2, ChevronRight } from "lucide-react"
 import { useUser, useStorage } from "@/firebase"
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage"
 import type { Profile } from "@/lib/profiles"
 import LegalStep from "./legal"
 import ProfileForm from "@/components/ProfileForm"
+import { uploadProfilePicture } from "@/lib/storageUtils"
 
 export default function RegisterBraceletPage() {
     const router = useRouter();
@@ -95,50 +95,43 @@ export default function RegisterBraceletPage() {
 
     const handleEditSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        if (!claimedProfile) return;
+        if (!claimedProfile || !user || !storage) return;
+        
         setIsSubmitting(true);
         
         const formData = new FormData(e.currentTarget);
         const data = Object.fromEntries(formData.entries());
         let photoUrl = '';
 
-        if (imageFile && user && storage) {
-            const storageRef = ref(storage, `profile_pictures/${user.uid}/${claimedProfile.id.toUpperCase()}_${Date.now()}`);
-            try {
-                const snapshot = await uploadBytes(storageRef, imageFile);
-                photoUrl = await getDownloadURL(snapshot.ref);
-            } catch (error) {
-                console.error("Error uploading image: ", error);
-                toast({ variant: "destructive", title: "Error al subir imagen", description: "No se pudo subir la imagen. Puedes continuar y añadirla más tarde." });
-                setIsSubmitting(false);
-                return;
-            }
-        }
-
-        const updatedData = {
-            name: data.name as string,
-            profileType: data.profileType as 'person' | 'pet',
-            type: data.profileType as 'person' | 'pet',
-            status: "Público",
-            photoUrl: photoUrl || null,
-            dob: data.dob as string,
-            bloodType: data['blood-type'] as string,
-            allergies: data.allergies as string,
-            conditions: data.conditions as string,
-            privacy: data.privacy as 'public' | 'private',
-            contacts: [{
-                name: data['contact-name-1'] as string,
-                relation: data['contact-relation-1'] as string,
-                phone: data['contact-phone-1'] as string
-            }].filter(c => c.name || c.phone)
-        };
-
         try {
+            if (imageFile) {
+                photoUrl = await uploadProfilePicture(storage, user, claimedProfile.id, imageFile);
+            }
+
+            const updatedData = {
+                name: data.name as string,
+                profileType: data.profileType as 'person' | 'pet',
+                type: data.profileType as 'person' | 'pet',
+                status: "Público",
+                photoUrl: photoUrl || null,
+                dob: data.dob as string,
+                bloodType: data['blood-type'] as string,
+                allergies: data.allergies as string,
+                conditions: data.conditions as string,
+                privacy: data.privacy as 'public' | 'private',
+                contacts: [{
+                    name: data['contact-name-1'] as string,
+                    relation: data['contact-relation-1'] as string,
+                    phone: data['contact-phone-1'] as string
+                }].filter(c => c.name || c.phone)
+            };
+
             await updateProfile(claimedProfile.id, updatedData);
             toast({ title: "Perfil Configurado", description: "Tu pulsera está lista y ha sido añadida a tu panel." });
             router.push('/dashboard');
         } catch (error: any) {
-            toast({ variant: "destructive", title: "Error al guardar", description: "No se pudo guardar el perfil. Inténtalo de nuevo." });
+            toast({ variant: "destructive", title: "Error al guardar", description: error.message || "No se pudo guardar el perfil." });
+        } finally {
             setIsSubmitting(false);
         }
     };
@@ -213,7 +206,6 @@ export default function RegisterBraceletPage() {
                             profile={claimedProfile}
                             isSubmitting={isSubmitting}
                             imagePreview={imagePreview}
-                            imageFile={imageFile}
                             profileType={profileType}
                             onImageChange={handleImageChange}
                             onProfileTypeChange={setProfileType}

@@ -3,15 +3,15 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2, ChevronRight } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { useParams, useRouter } from 'next/navigation';
 import { useState, useEffect } from "react";
 import { useProfiles } from "@/context/ProfileContext";
-import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
 import { useToast } from "@/hooks/use-toast";
 import { useUser, useStorage } from "@/firebase";
 import ProfileForm from "@/components/ProfileForm";
+import { uploadProfilePicture } from "@/lib/storageUtils";
 
 export default function EditProfilePage() {
     const router = useRouter();
@@ -70,58 +70,44 @@ export default function EditProfilePage() {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        if (!user || !storage) return;
+
         setIsSubmitting(true);
         const formData = new FormData(e.currentTarget);
         const data = Object.fromEntries(formData.entries());
         
         let photoUrl = profile.photoUrl || '';
 
-        if (imageFile && user && storage) {
-            // Delete old picture if it exists and it's a firebase storage url
-            if (profile.photoUrl && profile.photoUrl.includes('firebasestorage.googleapis.com')) {
-                try {
-                    const oldImageRef = ref(storage, profile.photoUrl);
-                    await deleteObject(oldImageRef);
-                } catch (error: any) {
-                    // It's not critical if the old image fails to delete, so we just log it
-                    if (error.code !== 'storage/object-not-found') {
-                       console.warn("Could not delete old profile picture: ", error);
-                    }
-                }
+        try {
+            if (imageFile) {
+                photoUrl = await uploadProfilePicture(storage, user, id, imageFile, profile.photoUrl);
             }
 
-            const storageRef = ref(storage, `profile_pictures/${user.uid}/${id.toUpperCase()}_${Date.now()}`);
-            try {
-                const snapshot = await uploadBytes(storageRef, imageFile);
-                photoUrl = await getDownloadURL(snapshot.ref);
-            } catch (error) {
-                console.error("Error uploading image: ", error);
-                toast({ variant: "destructive", title: "Error al subir imagen", description: "No se pudo subir la nueva imagen. Inténtalo de nuevo." });
-                setIsSubmitting(false);
-                return;
-            }
+            const updatedData = {
+                name: data.name as string,
+                profileType: data.profileType as 'person' | 'pet',
+                photoUrl: photoUrl,
+                dob: data.dob as string,
+                bloodType: data['blood-type'] as string,
+                allergies: data.allergies as string,
+                conditions: data.conditions as string,
+                privacy: data.privacy as 'public' | 'private',
+                contacts: [{
+                    name: data['contact-name-1'] as string,
+                    relation: data['contact-relation-1'] as string,
+                    phone: data['contact-phone-1'] as string
+                }].filter(c => c.name || c.phone) // Filter out empty contacts
+            };
+
+            await updateProfile(id, updatedData);
+            toast({ title: "Perfil Actualizado", description: "Tus cambios han sido guardados." });
+            router.push('/dashboard');
+
+        } catch (error: any) {
+            toast({ variant: "destructive", title: "Error al Guardar", description: error.message || "No se pudo guardar el perfil." });
+        } finally {
+            setIsSubmitting(false);
         }
-
-        const updatedData = {
-            name: data.name as string,
-            profileType: data.profileType as 'person' | 'pet',
-            photoUrl: photoUrl,
-            dob: data.dob as string,
-            bloodType: data['blood-type'] as string,
-            allergies: data.allergies as string,
-            conditions: data.conditions as string,
-            privacy: data.privacy as 'public' | 'private',
-            contacts: [{
-                name: data['contact-name-1'] as string,
-                relation: data['contact-relation-1'] as string,
-                phone: data['contact-phone-1'] as string
-            }].filter(c => c.name || c.phone) // Filter out empty contacts
-        };
-
-        await updateProfile(id, updatedData);
-        toast({ title: "Perfil Actualizado", description: "Tus cambios han sido guardados." });
-        setIsSubmitting(false);
-        router.push('/dashboard');
     }
 
     const handleDelete = async () => {
@@ -145,7 +131,6 @@ export default function EditProfilePage() {
                         profile={profile}
                         isSubmitting={isSubmitting}
                         imagePreview={imagePreview}
-                        imageFile={imageFile}
                         profileType={profileType}
                         onImageChange={handleImageChange}
                         onProfileTypeChange={setProfileType}
